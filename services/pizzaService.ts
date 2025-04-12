@@ -27,7 +27,7 @@ export async function fetchNearbyPizzaPlaces(latitude: number, longitude: number
     const userPrompt = `Find pizza places near latitude ${latitude} and longitude ${longitude}. 
     Include their names, distances, ratings, addresses, and coordinates.`;
 
-    const response = await fetch(GROK_API_ENDPOINT, {
+    const response = await fetch(GROK_API_ENDPOINT as string, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
