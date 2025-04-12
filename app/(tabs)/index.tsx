@@ -1,34 +1,11 @@
-import { Image, StyleSheet, Platform, Dimensions } from 'react-native';
+import { StyleSheet, Platform, Dimensions, RefreshControl } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import { useEffect, useState } from 'react';
-import * as Location from 'expo-location';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { PizzaPlacesList } from '@/components/PizzaPlacesList';
-import { PizzaPlace } from '@/types/pizza';
+import { usePizzaPlaces } from '@/hooks/usePizzaPlaces';
 
 export default function HomeScreen() {
-  const [location, setLocation] = useState<Location.LocationObject | null>(null);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [pizzaPlaces, setPizzaPlaces] = useState<PizzaPlace[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-      // TODO: Call Grok API to get pizza places
-    })();
-  }, []);
+  const { pizzaPlaces, loading, error, location, refreshPizzaPlaces } = usePizzaPlaces();
 
   return (
     <ThemedView style={styles.container}>
@@ -40,8 +17,8 @@ export default function HomeScreen() {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
-        showsUserLocation={true}
-        showsMyLocationButton={true}
+        showsUserLocation={true} // blue dot
+        showsMyLocationButton={false} // pin
       >
         {location && (
           <Marker
@@ -67,7 +44,7 @@ export default function HomeScreen() {
       <PizzaPlacesList
         places={pizzaPlaces}
         loading={loading}
-        error={errorMsg}
+        error={error}
       />
     </ThemedView>
   );
