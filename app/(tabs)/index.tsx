@@ -1,8 +1,9 @@
-import { StyleSheet, Platform, Dimensions, RefreshControl } from 'react-native';
+import { StyleSheet, Platform, Dimensions, RefreshControl, Pressable } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { ThemedView } from '@/components/ThemedView';
 import { PizzaPlacesList } from '@/components/PizzaPlacesList';
 import { usePizzaPlaces } from '@/hooks/usePizzaPlaces';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
   const { pizzaPlaces, loading, error, location, refreshPizzaPlaces } = usePizzaPlaces();
@@ -45,6 +46,14 @@ export default function HomeScreen() {
           />
         ))}
       </MapView>
+      
+      <Pressable 
+        style={styles.refreshButton}
+        onPress={refreshPizzaPlaces}
+      >
+        <Ionicons name="refresh" size={24} color="black" />
+      </Pressable>
+
       <PizzaPlacesList
         places={pizzaPlaces}
         loading={loading}
@@ -77,5 +86,21 @@ const styles = StyleSheet.create({
   map: {
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height * 0.5,
+  },
+  refreshButton: {
+    position: 'absolute',
+    top: 16,
+    left: 16,
+    backgroundColor: 'white',
+    padding: 8,
+    borderRadius: 20,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
 });

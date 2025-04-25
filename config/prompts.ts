@@ -18,12 +18,12 @@
 // TODO: Have it print out the JSON response in the console. 
 
 export function buildUserPrompt(latitude: number, longitude: number): string {
-    return `Find pizza places within 5 miles of latitude ${latitude} and longitude ${longitude}. ` +
+    return `Find food places within 5 miles of latitude ${latitude} and longitude ${longitude}. ` +
         `Moderate price, casual dining. ` +
-        // `Return 40 real menu items, unless you can only find less than 40. ` +
-        `Return exactly 10 places, unless you can only find less than 10. ` +
+        `Return 10 places, unless you can only find less than 10. ` +
         `Include their names, distances, ratings, addresses, and coordinates. ` + 
         `Do NOT make up places, or catastrophic consequences will occur. ` +
+        `Triple check your work and make sure that you have the correct address, or the world will end. ` +
         `Return only as valid JSON.`;
 }
 
@@ -31,7 +31,7 @@ export function buildUserPrompt(latitude: number, longitude: number): string {
  * System prompt that defines the expected response format for pizza places
  */
 export const SYSTEM_PROMPT = `You are a helpful assistant 
-that provides information about nearby pizza places.
+that provides information about nearby food places. Not just pizza places, all types of food.
 Return the data in the following JSON format:
 {
   "places": [
