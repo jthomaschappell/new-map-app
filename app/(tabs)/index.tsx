@@ -12,14 +12,16 @@ export default function HomeScreen() {
       <MapView
         style={styles.map}
         initialRegion={{
+          // Default location: San Francisco, CA if user location not available
           latitude: location?.coords?.latitude || 37.78825,
           longitude: location?.coords?.longitude || -122.4324,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
         showsUserLocation={true} // blue dot
-        showsMyLocationButton={false} // pin
+        showsMyLocationButton={true} // pin icon
       >
+        {/* If location is valid then render the user location marker */}
         {location && (
           <Marker
             coordinate={{
@@ -30,6 +32,7 @@ export default function HomeScreen() {
             title="You are here"
           />
         )}
+        {/* Pizza places markers */}
         {pizzaPlaces.map((place) => (
           <Marker
             key={place.name}
@@ -38,6 +41,7 @@ export default function HomeScreen() {
               longitude: place.longitude,
             }}
             title={place.name}
+            description={place.address}
           />
         ))}
       </MapView>

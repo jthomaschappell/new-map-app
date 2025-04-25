@@ -30,5 +30,27 @@ State of the union: It now shows a more accurate spot for your own location.
 TODO: Use a third party API to get our actual street location instead of latitude and longitude. 
 
 
-TODO: Dude, eat first. 
 
+# APP MAP 
+
+Entry Point: _layout.tsx 
+-> 
+(tabs) / index.tsx
+-> 
+returns a MapView
+-> 
+shows user location 
+
+Maps all of the pizza places onto the map. 
+
+Shows a list of all of the pizza places in a cute little list. 
+
+
+buildUserPrompt and SYSTEM_PROMPT
+<- 
+pizzaService.ts
+<- 
+usePizzaPlaces hook. 
+It's a useEffect that runs on mount. 
+<- 
+index.ts
