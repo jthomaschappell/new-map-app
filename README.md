@@ -4,6 +4,8 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 ## Get started
 
+# NOTE: Go to the file "keep_track_of_tests.md" to find the next action item. 
+
 1. Install dependencies
 
    ```bash
