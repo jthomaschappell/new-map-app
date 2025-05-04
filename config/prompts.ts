@@ -14,12 +14,14 @@
  * @param longitude - The longitude coordinate
  * @returns A string prompt for the API
  */
-// TODO: This is not returning menu items, this is returning pizza places. 
-// TODO: Have it print out the JSON response in the console. 
 
 export function buildUserPrompt(latitude: number, longitude: number): string {
-    return `Find food places within 5 miles of latitude ${latitude} and longitude ${longitude}. ` +
-        `Moderate price, casual dining. ` +
+    return `Find` + 
+        // `food places` + 
+        `trampoline parks` + 
+        `within 10 miles of latitude ${latitude} and longitude ${longitude}. ` +
+        // `within 5 miles of 865 N 160 W. ` +
+        // `Moderate price, casual dining. ` +
         `Return 10 places, unless you can only find less than 10. ` +
         `Include their names, distances, ratings, addresses, and coordinates. ` + 
         `Do NOT make up places, or catastrophic consequences will occur. ` +
@@ -30,18 +32,19 @@ export function buildUserPrompt(latitude: number, longitude: number): string {
 /**
  * System prompt that defines the expected response format for pizza places
  */
-export const SYSTEM_PROMPT = `You are a helpful assistant 
-that provides information about nearby food places. Not just pizza places, all types of food.
-Return the data in the following JSON format:
-{
-  "places": [
-    {
-      "name": string,
-      "distance": string,
-      "rating": number,
-      "address": string,
-      "latitude": number,
-      "longitude": number
-    }
-  ]
-}`; 
+export const SYSTEM_PROMPT = `You are a helpful assistant ` +
+    // `that provides information about nearby food places. Not just pizza places, all types of food. ` +
+    `that provides information about nearby trampoline parks. ` +
+    `Return the data in the following JSON format: ` +
+    `{ ` +
+    `  "places": [ ` +
+    `    { ` +
+    `      "name": string, ` +
+    `      "distance": string, ` +
+    `      "rating": number, ` +
+    `      "address": string, ` +
+    `      "latitude": number, ` +
+    `      "longitude": number ` +
+    `    } ` +
+    `  ] ` +
+    `}`; 

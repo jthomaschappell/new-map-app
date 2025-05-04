@@ -16,6 +16,10 @@ export default function HomeScreen() {
           // Default location: San Francisco, CA if user location not available
           latitude: location?.coords?.latitude || 37.78825,
           longitude: location?.coords?.longitude || -122.4324,
+          // These values control the zoom level and visible area of the map
+          // latitudeDelta: Degrees of latitude to display (smaller = more zoomed in)
+          // longitudeDelta: Degrees of longitude to display (smaller = more zoomed in)
+          // Current values show roughly a city-level view
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
