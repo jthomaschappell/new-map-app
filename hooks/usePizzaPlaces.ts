@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import * as Location from 'expo-location';
 import { PizzaPlace } from '@/types/pizza';
-import { fetchNearbyPizzaPlaces } from '@/services/pizzaService';
+import { fetchPizzaPlacesResponse } from '@/services/pizzaService';
 
 /**
  * Custom hook to manage pizza place data and location services
@@ -15,6 +15,7 @@ export function usePizzaPlaces() {
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
 
   /**
+   * 
    * Fetches pizza places for given coordinates
    * Manages loading and error states during the fetch operation
    */
@@ -22,14 +23,14 @@ export function usePizzaPlaces() {
     try {
       setLoading(true);
       setError(null);
-      const places = await fetchNearbyPizzaPlaces(latitude, longitude);
+      const places = await fetchPizzaPlacesResponse(latitude, longitude);
       setPizzaPlaces(places);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch pizza places');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, []);  // this runs only when component mounts, or when it's called 
 
   /**
    * Effect hook that runs on mount to:
@@ -48,14 +49,20 @@ export function usePizzaPlaces() {
         }
 
         // Get current location and fetch nearby pizza places
-        const location = await Location.getCurrentPositionAsync({});
+        const location = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.High,
+        });
+
+        let response = await Location.reverseGeocodeAsync(location.coords);
+        console.log(`ATTENTION MERE MORTALS, YOU ARE HERE: ${response[0].formattedAddress}`);
+
         setLocation(location);
         await fetchPizzaPlaces(location.coords.latitude, location.coords.longitude);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to get location');
       }
     })();
-  }, [fetchPizzaPlaces]);
+  }, [fetchPizzaPlaces]);  // this runs anytime fetchPizzaPlaces changes. 
 
   /**
    * Callback to manually refresh pizza places data

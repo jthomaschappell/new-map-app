@@ -17,7 +17,7 @@ if (!GROK_API_KEY || !GROK_API_ENDPOINT) {
  * @returns Promise<PizzaPlace[]> - Array of pizza places
  * @throws Error if API request fails or response parsing fails
  */
-export async function fetchNearbyPizzaPlaces(latitude: number, longitude: number): Promise<PizzaPlace[]> {
+export async function fetchPizzaPlacesResponse(latitude: number, longitude: number): Promise<PizzaPlace[]> {
   try {
     // Make API request to Grok
     const response = await fetch(GROK_API_ENDPOINT as string, {

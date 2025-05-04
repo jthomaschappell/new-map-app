@@ -1,13 +1,14 @@
-TODO: Try testing the endpoint with Postman. 
-TODO: Try testing from browser. 
-TODO: Try looking at my Grok console. 
-
 # STATE OF THE UNION 2025-05-03 22:44:32
 
 DONE: Run the app on your Android emulator. 
 
 STATE OF THE UNION: 
 It was that my tokens were out, so I had to buy more. After that, the requests started working. 
+
+
+TODO: Commit this and mark it as buildable-prompt that can pull up locations for pizza places, trampoline parks, anything. 
+
+
 
 
 
@@ -21,7 +22,6 @@ Defects:
 It zooms in on San Francisco even when it correctly places the blue dot on the user
 Increase the accuracy through prompt engineering. 
 
-TODO: Fix these bugs. 
 
 
 ```
