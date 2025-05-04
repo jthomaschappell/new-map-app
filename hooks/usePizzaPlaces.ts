@@ -9,7 +9,7 @@ import { fetchPizzaPlacesResponse } from '@/services/pizzaService';
  */
 export function usePizzaPlaces() {
   // State for storing pizza places data and UI states
-  const [pizzaPlaces, setPizzaPlaces] = useState<PizzaPlace[]>([]);
+  const [pizzaPlaces, setPizzaPlaces] = useState<PizzaPlace[]>([]);   // pizza places is initially an empty array. 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
@@ -24,7 +24,7 @@ export function usePizzaPlaces() {
       setLoading(true);
       setError(null);
       const places = await fetchPizzaPlacesResponse(latitude, longitude);
-      setPizzaPlaces(places);
+      setPizzaPlaces(places); // here, we set pizza places to be the places we fetched from the API call. 
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch pizza places');
     } finally {
@@ -55,6 +55,7 @@ export function usePizzaPlaces() {
 
         let response = await Location.reverseGeocodeAsync(location.coords);
         console.log(`ATTENTION MERE MORTALS, YOU ARE HERE: ${response[0].formattedAddress}`);
+        console.log(`ATTENTION MERE MORTALS, LATITUDE AND LONGITUDE: ${location.coords.latitude}, ${location.coords.longitude}`);
 
         setLocation(location);
         await fetchPizzaPlaces(location.coords.latitude, location.coords.longitude);
