@@ -1,19 +1,53 @@
 import { PizzaPlace } from '@/types/pizza';
 import { buildUserPrompt, SYSTEM_PROMPT } from '@/config/prompts';
 
+console.log("process.env");
+console.log(process.env);
 // API configuration constants
-const GROK_API_KEY = process.env.EXPO_PUBLIC_GROK_API_KEY;
-const GROK_API_ENDPOINT = process.env.EXPO_PUBLIC_GROK_API_ENDPOINT;
-const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
-const GOOGLE_PLACES_API_ENDPOINT = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_ENDPOINT;
+const GROK_API_KEY = process.env.GROK_API_KEY;
+const GROK_API_ENDPOINT = process.env.GROK_API_ENDPOINT;
+const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+const GOOGLE_PLACES_API_ENDPOINT = process.env.GOOGLE_PLACES_API_ENDPOINT;
 
-// Validate required environment variables
-if (!GROK_API_KEY || !GROK_API_ENDPOINT) {
-  throw new Error('Missing required environment variables for Grok API');
+// Validate Google Maps API environment variables
+if (!GOOGLE_MAPS_API_KEY) {
+  throw new Error('Missing required environment variable: GOOGLE_MAPS_API_KEY');
 }
 
-if (!GOOGLE_MAPS_API_KEY) {
-  throw new Error('Missing required environment variable for Google Maps API');
+if (!GROK_API_ENDPOINT) {
+  throw new Error('Missing required environment variable: GROK_API_ENDPOINT');
+}
+
+// Validate Grok API environment variables
+if (!GROK_API_KEY) {
+  throw new Error('Missing required environment variable: GROK_API_KEY');
+}
+
+if (!GOOGLE_PLACES_API_ENDPOINT) {
+  throw new Error('Missing required environment variable: GOOGLE_PLACES_API_ENDPOINT');
+}
+
+function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
+  // Earth's radius in miles
+  const earthRadius = 3958.8; // miles (6371 km)
+  
+  // Convert latitude and longitude from degrees to radians
+  const toRadians = (degrees: number ) => degrees * Math.PI / 180;
+  
+  const dLat = toRadians(lat2 - lat1);
+  const dLon = toRadians(lon2 - lon1);
+  
+  // Haversine formula
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const distance = earthRadius * c;
+  
+  // Return distance rounded to 2 decimal places
+  return Math.round(distance * 100) / 100;
 }
 
 /**
@@ -52,12 +86,19 @@ export async function fetchPlacesGoogleAPI(latitude: number, longitude: number):
     }
 
     const data = await response.json();
+    
     return data.places.map((place: any) => ({
       name: place.displayName.text,
       address: place.formattedAddress,
       rating: place.rating,
       latitude: place.location.latitude,
-      longitude: place.location.longitude
+      longitude: place.location.longitude,
+      distance: calculateDistance(
+        latitude,
+        longitude,
+        place.location.latitude,
+        place.location.longitude
+      )
     }));
 
   } catch (error) {
