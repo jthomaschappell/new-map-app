@@ -4,10 +4,66 @@ import { buildUserPrompt, SYSTEM_PROMPT } from '@/config/prompts';
 // API configuration constants
 const GROK_API_KEY = process.env.EXPO_PUBLIC_GROK_API_KEY;
 const GROK_API_ENDPOINT = process.env.EXPO_PUBLIC_GROK_API_ENDPOINT;
+const GOOGLE_MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
+const GOOGLE_PLACES_API_ENDPOINT = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_ENDPOINT;
 
 // Validate required environment variables
 if (!GROK_API_KEY || !GROK_API_ENDPOINT) {
   throw new Error('Missing required environment variables for Grok API');
+}
+
+if (!GOOGLE_MAPS_API_KEY) {
+  throw new Error('Missing required environment variable for Google Maps API');
+}
+
+/**
+ * Fetches nearby places using the Google Places API
+ * @param latitude - The latitude coordinate to search from
+ * @param longitude - The longitude coordinate to search from
+ * @returns Promise<PizzaPlace[]> - Array of places
+ * @throws Error if API request fails or response parsing fails
+ */
+export async function fetchPlacesGoogleAPI(latitude: number, longitude: number): Promise<PizzaPlace[]> {
+  try {
+    const response = await fetch(GOOGLE_PLACES_API_ENDPOINT as string , {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': GOOGLE_MAPS_API_KEY as string,
+        'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.location,places.rating'
+      },
+      body: JSON.stringify({
+        locationRestriction: {
+          circle: {
+            center: {
+              latitude: latitude,
+              longitude: longitude
+            },
+            radius: 1500.0
+          }
+        },
+        rankPreference: "DISTANCE",
+        maxResultCount: 10
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Google Places API request failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.places.map((place: any) => ({
+      name: place.displayName.text,
+      address: place.formattedAddress,
+      rating: place.rating,
+      latitude: place.location.latitude,
+      longitude: place.location.longitude
+    }));
+
+  } catch (error) {
+    console.error('Error fetching places from Google API:', error);
+    throw error;
+  }
 }
 
 /**
@@ -17,7 +73,7 @@ if (!GROK_API_KEY || !GROK_API_ENDPOINT) {
  * @returns Promise<PizzaPlace[]> - Array of pizza places
  * @throws Error if API request fails or response parsing fails
  */
-export async function fetchPizzaPlacesResponse(latitude: number, longitude: number): Promise<PizzaPlace[]> {
+export async function fetchPlacesGrok(latitude: number, longitude: number): Promise<PizzaPlace[]> {
   try {
     // Make API request to Grok
     const response = await fetch(GROK_API_ENDPOINT as string, {

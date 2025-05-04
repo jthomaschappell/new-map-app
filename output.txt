@@ -1,0 +1,124 @@
+{
+  "places": [
+    {
+      "formattedAddress": "504 W 2230 N, Provo, UT 84604, USA",
+      "location": {
+        "latitude": 40.263632,
+        "longitude": -111.667206
+      },
+      "rating": 4.4,
+      "displayName": {
+        "text": "Olive Garden Italian Restaurant",
+        "languageCode": "en"
+      }
+    },
+    {
+      "formattedAddress": "408 W 2230 N, Provo, UT 84604, USA",
+      "location": {
+        "latitude": 40.2638926,
+        "longitude": -111.6667637
+      },
+      "rating": 4.2,
+      "displayName": {
+        "text": "Cafe Zupas",
+        "languageCode": "en"
+      }
+    },
+    {
+      "formattedAddress": "2250 N University Pkwy Ste 816, Provo, UT 84604, USA",
+      "location": {
+        "latitude": 40.2640922,
+        "longitude": -111.66807539999999
+      },
+      "rating": 3.9,
+      "displayName": {
+        "text": "Cafe Rio Fresh Modern Mexican",
+        "languageCode": "en"
+      }
+    },
+    {
+      "formattedAddress": "396 W 2230 N, Provo, UT 84604, USA",
+      "location": {
+        "latitude": 40.263842,
+        "longitude": -111.66568199999999
+      },
+      "rating": 4.1,
+      "displayName": {
+        "text": "JCW's The Burger Boys",
+        "languageCode": "en"
+      }
+    },
+    {
+      "formattedAddress": "2302 N University Pkwy, Provo, UT 84604, USA",
+      "location": {
+        "latitude": 40.2647378,
+        "longitude": -111.66893759999999
+      },
+      "rating": 4.1,
+      "displayName": {
+        "text": "Cold Stone Creamery",
+        "languageCode": "en"
+      }
+    },
+    {
+      "formattedAddress": "2275 N University Pkwy, Provo, UT 84604, USA",
+      "location": {
+        "latitude": 40.263794999999995,
+        "longitude": -111.66955829999999
+      },
+      "rating": 3.3,
+      "displayName": {
+        "text": "Wingstop",
+        "languageCode": "en"
+      }
+    },
+    {
+      "formattedAddress": "2308 N University Pkwy, Provo, UT 84604, USA",
+      "location": {
+        "latitude": 40.264883999999995,
+        "longitude": -111.66916200000001
+      },
+      "rating": 4.1,
+      "displayName": {
+        "text": "Jimmy John's",
+        "languageCode": "en"
+      }
+    },
+    {
+      "formattedAddress": "2245 N University Pkwy, Provo, UT 84604, USA",
+      "location": {
+        "latitude": 40.2632927,
+        "longitude": -111.66873819999999
+      },
+      "rating": 4.2,
+      "displayName": {
+        "text": "Habit Burger & Grill",
+        "languageCode": "en"
+      }
+    },
+    {
+      "formattedAddress": "2306 N University Pkwy, Provo, UT 84604, USA",
+      "location": {
+        "latitude": 40.264829999999996,
+        "longitude": -111.6690769
+      },
+      "rating": 4.6,
+      "displayName": {
+        "text": "Lovely Pho",
+        "languageCode": "en"
+      }
+    },
+    {
+      "formattedAddress": "2265 N University Pkwy, Provo, UT 84604, USA",
+      "location": {
+        "latitude": 40.2638081,
+        "longitude": -111.66954319999999
+      },
+      "rating": 4.4,
+      "displayName": {
+        "text": "Bahama Buck's - Provo",
+        "languageCode": "en"
+      }
+    }
+  ]
+}

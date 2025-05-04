@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import * as Location from 'expo-location';
 import { PizzaPlace } from '@/types/pizza';
-import { fetchPizzaPlacesResponse } from '@/services/pizzaService';
+import { fetchPlacesGrok } from '@/services/pizzaService';
 
 /**
  * Custom hook to manage pizza place data and location services
@@ -23,7 +23,7 @@ export function usePizzaPlaces() {
     try {
       setLoading(true);
       setError(null);
-      const places = await fetchPizzaPlacesResponse(latitude, longitude);
+      const places = await fetchPlacesGrok(latitude, longitude);
       setPizzaPlaces(places); // here, we set pizza places to be the places we fetched from the API call. 
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch pizza places');

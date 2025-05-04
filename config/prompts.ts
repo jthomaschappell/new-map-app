@@ -32,6 +32,7 @@ export function buildUserPrompt(latitude: number, longitude: number): string {
 /**
  * System prompt that defines the expected response format for pizza places
  */
+
 export const SYSTEM_PROMPT = `You are a helpful assistant ` +
     // `that provides information about nearby food places. Not just pizza places, all types of food. ` +
     `that provides information about nearby trampoline parks. ` +

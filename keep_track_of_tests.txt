@@ -43,13 +43,70 @@ The tech stack for our app
 * Grok AI || Yelp API for accurate menu data. 
 
 
-TODO: Make sure that you have a Google Places API key
-TODO: Try calling Nearby Search from Postman. 
+DONE: Make sure that you have a Google Places API key. WORKS. It's in the .env file. 
+DONE: Try calling Nearby Search from Postman. WORKS. 
 
-TODO: Now that you've got the thing enabled, you can hit the endpoint with your API key. 
-!Try it with Postman first. 
+DONE: Now that you've got the thing enabled, you can hit the endpoint with your API key. 
 
 
+DONE: What data are the cards expecting? 
+
+TODO: Great, let's process them. 
+
+TODO: Go to PizzaService and add the new service that calls on Google Maps API instead of Grok. 
+
+
+Name 
+Distance 
+Rating 
+address
+latitude 
+longitude 
+
+----------
+
+
+
+
+// Assume this is the JSON response from a fetch request
+function extractRestaurantInfo(response) {
+  // Get the first place from the response
+  const place = response.places[0];
+  
+  if (!place) {
+    console.log("No place found in the response");
+    return null;
+  }
+  
+  // Extract the requested information
+  const restaurantInfo = {
+    name: place.displayName.text,
+    rating: place.rating,
+    address: place.formattedAddress,
+    latitude: place.location.latitude,
+    longitude: place.location.longitude,
+    // Note: distance is not directly available for the main restaurant
+  };
+  
+  console.log("Restaurant Information:");
+  console.log(`Name: ${restaurantInfo.name}`);
+  console.log(`Rating: ${restaurantInfo.rating}`);
+  console.log(`Address: ${restaurantInfo.address}`);
+  console.log(`Latitude: ${restaurantInfo.latitude}`);
+  console.log(`Longitude: ${restaurantInfo.longitude}`);
+  
+  return restaurantInfo;
+}
+
+// Usage (assuming 'response' is your JSON data):
+const restaurantInfo = extractRestaurantInfo(response);
+
+
+
+
+
+
+-------------
 
 
 DONE: How are the pizza places rendered in the frontend? 
