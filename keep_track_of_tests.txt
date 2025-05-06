@@ -3,38 +3,14 @@ note: LOOK AT THIS FIRST:
 
 STATE OF THE UNION: 
 
-TODO: Look at this defect. 
-
-Bug: PizzaService.ts is not able to access the .env file
-I suspect that it `is because we changed it to use dotenv when we changed app.json --> app.c
-onfig.js`
-
-Possible fix: 
-Go back to when it was working and see what the process.env was showing
-Revert app.config.js to app.json if needed
-Look in the dependencies for dotenv and remove it if needed
-
-
-
 
 TODO: Make it so that each item has a specific ID. 
 TODO: Print all the id's 
-
-
-
-
-# STATE OF THE UNION 2025-05-03 22:44:32
-
-DONE: Run the app on your Android emulator. 
-
 
 *TEST UPS: 
 * 1) It pulls locations around me from the Google Maps API. 
 * 2) It pulls the restaurants
 * 3) It pulls the menu items 
-
-TODO: Look at Google Maps API. 
-
 
 * MY THOUGHTS: 
 
@@ -69,10 +45,9 @@ DONE: Now that you've got the thing enabled, you can hit the endpoint with your 
 
 DONE: What data are the cards expecting? 
 
-TODO: Great, let's process them. 
+STATE OF THE UNION; 
 
-TODO: Go to PizzaService and add the new service that calls on Google Maps API instead of Grok. 
-
+It is finding all of the things within 5 miles, according to the API. 
 
 Name 
 Distance 
@@ -198,7 +173,7 @@ Loads in index.tsx
 
 # TODAY 2025-04-25 09:51:40
 
-TODO: Do a state of the union. 
+
 
 State of the union: It now shows a more accurate spot for your own location. 
 

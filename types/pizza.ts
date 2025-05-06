@@ -1,5 +1,5 @@
 export interface PizzaPlace {
-  id: number;
+  id: string;
   name: string;
   distance: string;
   rating?: number;

@@ -31,7 +31,8 @@ export function PizzaPlacesList({ places, loading, error }: PizzaPlacesListProps
       <ThemedText type="subtitle" style={styles.title}>Nearby Pizza Places</ThemedText>
       <FlatList
         data={places}
-        keyExtractor={(item) => item.name}
+        // TODO: Key shall now be item.id
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <ThemedView style={styles.placeItem}>
             <ThemedText type="defaultSemiBold">{item.name}</ThemedText>

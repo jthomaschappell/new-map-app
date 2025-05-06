@@ -42,15 +42,18 @@ export function usePizzaPlaces() {
       // setPizzaPlaces(places); // here, we set pizza places to be the places we fetched from the API call. 
 
       const googlePlaces = await fetchPlacesGoogleAPI(latitude, longitude); 
-      console.log("ATTENTION LATE NIGHT DENIZENS: The places pulled by google were: ", googlePlaces);  
+      console.log("ATTENTION: The places pulled by google were: ", googlePlaces);  
+      console.log("------------------------------------------------------------------------------------------------" );
       const uniqueGooglePlaces = removeDuplicates(googlePlaces);
-      console.log("ATTENTION LATE NIGHT DENIZENS: The unique places pulled by google were: ", uniqueGooglePlaces);  
+      console.log("ATTENTION: The unique places pulled by google were: ", uniqueGooglePlaces);  
+      console.log("------------------------------------------------------------------------------------------------" );
 
       uniqueGooglePlaces.forEach((place: PizzaPlace, index: number) => {
         place.id = index;
       });
       setPizzaPlaces(uniqueGooglePlaces);
-      console.log("ATTENTION LATE NIGHT DENIZENS: The unique places pulled by google after adding ids were: ", uniqueGooglePlaces);  
+      console.log("ATTENTION: The unique places pulled by google after adding ids were: ", uniqueGooglePlaces);  
+      console.log("------------------------------------------------------------------------------------------------" );
       console.log("------------------------------------------------------------------------------------------------" );
 
       // sort the places by distance

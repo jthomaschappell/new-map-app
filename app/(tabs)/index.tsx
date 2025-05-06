@@ -6,8 +6,7 @@ import { usePizzaPlaces } from '@/hooks/usePizzaPlaces';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
-  const { pizzaPlaces, loading, error, location, refreshPizzaPlaces } = usePizzaPlaces();
-
+  const { pizzaPlaces, loading, error, location, refreshPizzaPlaces } = usePizzaPlaces();  
   return (
     <ThemedView style={styles.container}>
       <MapView
@@ -40,7 +39,7 @@ export default function HomeScreen() {
         {/* Pizza places markers */}
         {pizzaPlaces.map((place) => (
           <Marker
-            key={place.name}
+            key={place.id}
             coordinate={{
               latitude: place.latitude,
               longitude: place.longitude,
