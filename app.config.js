@@ -10,6 +10,12 @@ export default {
     scheme: "myapp",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
+    extra: {
+      GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
+      GOOGLE_PLACES_API_ENDPOINT: process.env.GOOGLE_PLACES_API_ENDPOINT,
+      GROK_API_KEY: process.env.GROK_API_KEY,
+      GROK_API_ENDPOINT: process.env.GROK_API_ENDPOINT,
+    },
     ios: {
       supportsTablet: true,
       config: {

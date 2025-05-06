@@ -1,13 +1,24 @@
 import { PizzaPlace } from '@/types/pizza';
 import { buildUserPrompt, SYSTEM_PROMPT } from '@/config/prompts';
+import Constants from 'expo-constants';
 
-console.log("process.env");
-console.log(process.env);
-// API configuration constants
-const GROK_API_KEY = process.env.GROK_API_KEY;
-const GROK_API_ENDPOINT = process.env.GROK_API_ENDPOINT;
-const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
-const GOOGLE_PLACES_API_ENDPOINT = process.env.GOOGLE_PLACES_API_ENDPOINT;
+// Get environment variables from Expo Constants
+const extra = Constants.expoConfig?.extra;
+if (!extra) {
+  throw new Error('Expo config is not available');
+}
+
+const {
+  GOOGLE_MAPS_API_KEY,
+  GOOGLE_PLACES_API_ENDPOINT,
+  GROK_API_KEY,
+  GROK_API_ENDPOINT
+} = extra as {
+  GOOGLE_MAPS_API_KEY: string;
+  GOOGLE_PLACES_API_ENDPOINT: string;
+  GROK_API_KEY: string;
+  GROK_API_ENDPOINT: string;
+};
 
 // Validate Google Maps API environment variables
 if (!GOOGLE_MAPS_API_KEY) {
