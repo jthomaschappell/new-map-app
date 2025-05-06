@@ -3,6 +3,19 @@ import * as Location from 'expo-location';
 import { PizzaPlace } from '@/types/pizza';
 import { fetchPlacesGoogleAPI, fetchPlacesGrok } from '@/services/pizzaService';
 
+function removeDuplicates(places: PizzaPlace[]) {
+  const seen = new Set();
+  return places.filter((place: PizzaPlace) => {
+    const key = JSON.stringify(place);
+    if (seen.has(key)) {  // if the place has already been seen, return false
+      return false;
+    } else {
+      seen.add(key); // if the place has not been seen, add it to the set
+      return true;
+    }
+  });
+} 
+
 /**
  * Custom hook to manage pizza place data and location services
  * Returns pizza places near the user's current location
@@ -24,12 +37,21 @@ export function usePizzaPlaces() {
       setLoading(true);
       setError(null);
       const places = await fetchPlacesGrok(latitude, longitude);
-      setPizzaPlaces(places); // here, we set pizza places to be the places we fetched from the API call. 
 
-      //! REPLACE THIS WITH BETTER IMPLEMENTATION
+      // ! TODO: Test these series of steps and look in your console logs. 
+      // setPizzaPlaces(places); // here, we set pizza places to be the places we fetched from the API call. 
+
       const googlePlaces = await fetchPlacesGoogleAPI(latitude, longitude); 
       console.log("ATTENTION LATE NIGHT DENIZENS: The places pulled by google were: ", googlePlaces);  
+      const uniqueGooglePlaces = removeDuplicates(googlePlaces);
+      console.log("ATTENTION LATE NIGHT DENIZENS: The unique places pulled by google were: ", uniqueGooglePlaces);  
 
+      uniqueGooglePlaces.forEach((place: PizzaPlace, index: number) => {
+        place.id = index;
+      });
+      setPizzaPlaces(uniqueGooglePlaces);
+      console.log("ATTENTION LATE NIGHT DENIZENS: The unique places pulled by google after adding ids were: ", uniqueGooglePlaces);  
+      console.log("------------------------------------------------------------------------------------------------" );
 
       // sort the places by distance
     } catch (err) {

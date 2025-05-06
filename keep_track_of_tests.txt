@@ -17,6 +17,10 @@ Look in the dependencies for dotenv and remove it if needed
 
 
 
+TODO: Make it so that each item has a specific ID. 
+TODO: Print all the id's 
+
+
 
 
 # STATE OF THE UNION 2025-05-03 22:44:32
