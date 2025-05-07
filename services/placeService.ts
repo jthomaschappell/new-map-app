@@ -1,4 +1,4 @@
-import { PizzaPlace } from '@/types/pizza_place';
+import { Place } from '@/types/place';
 import { buildTrampolineSystemPrompt, buildTrampolineUserPrompt } from '@/config/prompts';
 import Constants from 'expo-constants';
 
@@ -41,7 +41,7 @@ if (!GOOGLE_PLACES_API_ENDPOINT) {
  * @returns Promise<PizzaPlace[]> - Array of places
  * @throws Error if API request fails or response parsing fails
  */
-export async function fetchPlacesGoogleAPI(latitude: number, longitude: number): Promise<PizzaPlace[]> {
+export async function fetchPlacesGoogleAPI(latitude: number, longitude: number): Promise<Place[]> {
   try {
     const response = await fetch(GOOGLE_PLACES_API_ENDPOINT as string , {
       method: 'POST',
@@ -49,7 +49,8 @@ export async function fetchPlacesGoogleAPI(latitude: number, longitude: number):
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': GOOGLE_MAPS_API_KEY as string,
         // 'X-Goog-FieldMask': '*'
-        'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.location,places.rating,places.types'
+        // NOTE: It's crucial that we get the places.types field because Grok looks at that downstream. 
+        'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.location,places.rating,places.types' 
       },
       body: JSON.stringify({
         locationRestriction: {
@@ -79,13 +80,13 @@ export async function fetchPlacesGoogleAPI(latitude: number, longitude: number):
     const data = await response.json();
     console.log("Google Places API successfully called");
 
-    return data.places.map((place: any) => ({
+    const result = data.places.map((place: any) => ({
       name: place.displayName.text,
       address: place.formattedAddress,
+      types: place.types,
       rating: place.rating,
       latitude: place.location.latitude,
       longitude: place.location.longitude,
-      types: place.types,
       distance: calculateDistance(
         latitude,
         longitude,
@@ -93,6 +94,13 @@ export async function fetchPlacesGoogleAPI(latitude: number, longitude: number):
         place.location.longitude
       )
     }));
+
+    // add ids to the places for use later in PlaceList
+    result.forEach((place: Place, index: number) => {
+      place.id = index.toString();
+    });
+
+    return result;
 
   } catch (error) {
     console.error('Error fetching places from Google API:', error);
@@ -153,7 +161,7 @@ export async function genericCallerGrok(userPrompt: string, systemPrompt:string)
  * @returns Promise<PizzaPlace[]> - Array of pizza places
  * @throws Error if API request fails or response parsing fails
  */
-export async function fetchPlacesGrok(latitude: number, longitude: number): Promise<PizzaPlace[]> {
+export async function fetchPlacesGrok(latitude: number, longitude: number): Promise<Place[]> {
   try {
     // Make API request to Grok
     const response = await fetch(GROK_API_ENDPOINT as string, {
@@ -200,7 +208,7 @@ export async function fetchPlacesGrok(latitude: number, longitude: number): Prom
  * @returns PizzaPlace[] - Array of parsed pizza places
  * @throws Error if parsing fails or response format is invalid
  */
-function parsePizzaPlacesResponse(data: any): PizzaPlace[] {
+function parsePizzaPlacesResponse(data: any): Place[] {
   try {
     const content = data.choices?.[0]?.message?.content;
     if (!content) {

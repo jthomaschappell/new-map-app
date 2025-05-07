@@ -1,4 +1,4 @@
-export interface PizzaPlace {
+export interface Place {
   id: string;
   name: string;
   types: string[];

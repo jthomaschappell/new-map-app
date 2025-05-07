@@ -1,12 +1,12 @@
 import { StyleSheet, Platform, Dimensions, RefreshControl, Pressable } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { ThemedView } from '@/components/ThemedView';
-import { PizzaPlacesList } from '@/components/PizzaPlacesList';
+import { MenuItemsList } from '@/components/MenuItemsList';
 import { usePlaces } from '@/hooks/usePlaces';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
-  const { places, loading, error, location, refreshPlaces } = usePlaces();  
+  const { places, menuItems, loading, error, location, refreshPlaces } = usePlaces();  
   return (
     <ThemedView style={styles.container}>
       <MapView
@@ -57,8 +57,8 @@ export default function HomeScreen() {
         <Ionicons name="refresh" size={24} color="black" />
       </Pressable>
 
-      <PizzaPlacesList
-        places={places}
+      <MenuItemsList
+        menuItems={menuItems}
         loading={loading}
         error={error}
       />

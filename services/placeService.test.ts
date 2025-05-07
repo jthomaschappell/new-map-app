@@ -1,4 +1,4 @@
-import { PizzaPlace } from '@/types/pizza_place';
+import { Place } from '@/types/place';
 import { fetchPlacesGoogleAPI } from './placeService';
 
 // Mock data that matches the Google Places API response structure
@@ -29,7 +29,7 @@ const mockGooglePlacesResponse = {
 export const mockFetchPlacesGoogleAPI = async (
   latitude: number,
   longitude: number
-): Promise<PizzaPlace[]> => {
+): Promise<Place[]> => {
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 500));
 

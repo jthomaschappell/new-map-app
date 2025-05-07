@@ -150,3 +150,7 @@ Loads in index.tsx
 
 ```
 
+TODO: Have it give the latitude longitude on the menu item. 
+
+TODO: Have it give the calculated distance on the menu item. 
+

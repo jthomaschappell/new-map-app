@@ -4,4 +4,7 @@ export interface MenuItem {
     price: number;
     restaurant: string;
     message: string;
+    latitude: number;
+    longitude: number;
+    distance: string;
 }
