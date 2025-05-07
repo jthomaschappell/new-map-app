@@ -1,5 +1,5 @@
 import { PizzaPlace } from '@/types/pizza_place';
-import { fetchPlacesGoogleAPI } from './pizzaService';
+import { fetchPlacesGoogleAPI } from './placeService';
 
 // Mock data that matches the Google Places API response structure
 const mockGooglePlacesResponse = {

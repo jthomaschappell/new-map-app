@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import * as Location from 'expo-location';
 import { PizzaPlace } from '@/types/pizza_place';
-import { fetchPlacesGoogleAPI, fetchPlacesGrok, genericCallerGrok } from '@/services/pizzaService';
+import { fetchPlacesGoogleAPI, fetchPlacesGrok, genericCallerGrok } from '@/services/placeService';
 import { withRepeat } from 'react-native-reanimated';
 import { MenuItem } from '@/types/menu_item';
 
@@ -29,22 +29,22 @@ function filterPlacesByType(places: PizzaPlace[], filterString: string): PizzaPl
 }
 
 /**
- * Custom hook to manage pizza place data and location services
- * Returns pizza places near the user's current location
+ * Custom hook to manage place data and location services
+ * Returns places near the user's current location
  */
-export function usePizzaPlaces() {
-  // State for storing pizza places data and UI states
-  const [pizzaPlaces, setPizzaPlaces] = useState<PizzaPlace[]>([]);   // pizza places is initially an empty array. 
+export function usePlaces() {
+  // State for storing places data and UI states
+  const [places, setPlaces] = useState<PizzaPlace[]>([]);   // places is initially an empty array.
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
 
   /**
    * 
-   * Fetches pizza places for given coordinates
+   * Fetches places for given coordinates
    * Manages loading and error states during the fetch operation
    */
-  const fetchPizzaPlaces = useCallback(async (latitude: number, longitude: number) => {
+  const fetchPlaces = useCallback(async (latitude: number, longitude: number) => {
     try {
       setLoading(true);
       setError(null);
@@ -54,23 +54,19 @@ export function usePizzaPlaces() {
       const googlePlaces = await fetchPlacesGoogleAPI(latitude, longitude); 
       const uniqueGooglePlaces = removeDuplicates(googlePlaces);
 
-      // add ids to the places for use later in PizzaPlaceList
+      // add ids to the places for use later in PlaceList
       uniqueGooglePlaces.forEach((place: PizzaPlace, index: number) => {
         place.id = index.toString();
       });
 
       // !: You need to pass it where you are so that it can calculate the distance and place it here in the List View. 
 
-      // TODO: Now generify it so that it's not pizza places anymore. 
-
-      // TODO: First, do a git commit. 
-
       const userPrompt = `
 You will receive a list of up to 20 restaurants in JSON format, each with location data.
 Use this list to search the internet for menus from these restaurants.
 Extract popular or signature food items from each menu, aiming to return a total of **up to 40 items** overall.
 
-Some restaurants may not have public menus — if that’s the case, skip them or infer likely menu items based on restaurant type or name.
+Some restaurants may not have public menus — if that's the case, skip them or infer likely menu items based on restaurant type or name.
 
 For each menu item you return, include the following:
 - "name" (of the menu item, as a string)
@@ -115,8 +111,8 @@ Your goal is to return menu items in a clean, consistent JSON structure. Be accu
 
       // TODO: Next up is taking the menu items and putting them into the list. 
       
-      // ! This is for converting the response data into pizzaPlace objects. 
-      // // Convert the parsed response into PizzaPlace objects
+      // ! This is for converting the response data into place objects. 
+      // // Convert the parsed response into place objects
       // const filteredPlaces = parsedResponse.places.map((place: any) => ({
       //   id: place.id,
       //   name: place.name,
@@ -130,9 +126,9 @@ Your goal is to return menu items in a clean, consistent JSON structure. Be accu
       // console.log("Grok says that the filtered list is: "); 
       // console.log(filteredPlaces);
 
-      setPizzaPlaces(uniqueGooglePlaces);
+      setPlaces(uniqueGooglePlaces);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch pizza places');
+      setError(err instanceof Error ? err.message : 'Failed to fetch places');
     } finally {
       setLoading(false);
     }
@@ -142,7 +138,7 @@ Your goal is to return menu items in a clean, consistent JSON structure. Be accu
    * Effect hook that runs on mount to:
    * 1. Request location permissions
    * 2. Get current location
-   * 3. Fetch pizza places near that location
+   * 3. Fetch places near that location
    */
   useEffect(() => {
     (async () => {
@@ -154,7 +150,7 @@ Your goal is to return menu items in a clean, consistent JSON structure. Be accu
           return;
         }
 
-        // Get current location and fetch nearby pizza places
+        // Get current location and fetch nearby places
         const location = await Location.getCurrentPositionAsync({
           accuracy: Location.Accuracy.High,
         });
@@ -162,28 +158,28 @@ Your goal is to return menu items in a clean, consistent JSON structure. Be accu
         let response = await Location.reverseGeocodeAsync(location.coords);
 
         setLocation(location);
-        await fetchPizzaPlaces(location.coords.latitude, location.coords.longitude);
+        await fetchPlaces(location.coords.latitude, location.coords.longitude);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to get location');
       }
     })();
-  }, [fetchPizzaPlaces]);  // this runs anytime fetchPizzaPlaces changes. 
+  }, [fetchPlaces]);  // this runs anytime fetchPlaces changes. 
 
   /**
-   * Callback to manually refresh pizza places data
+   * Callback to manually refresh places data
    * Only works if we have a valid location
    */
-  const refreshPizzaPlaces = useCallback(async () => {
+  const refreshPlaces = useCallback(async () => {
     if (location) {
-      await fetchPizzaPlaces(location.coords.latitude, location.coords.longitude);
+      await fetchPlaces(location.coords.latitude, location.coords.longitude);
     }
-  }, [location, fetchPizzaPlaces]);
+  }, [location, fetchPlaces]);
 
   return {
-    pizzaPlaces,
+    places,
     loading,
     error,
     location,
-    refreshPizzaPlaces,
+    refreshPlaces,
   };
 } 

@@ -3,9 +3,6 @@ note: LOOK AT THIS FIRST:
 
 STATE OF THE UNION: 
 
-
-! TODO: Try calling it from Postman instead. And it works. 
-
 For Olive Garden (places.displayName.text) 
 It has several types like: restaurant, italian_restaurant, 
 
@@ -14,8 +11,7 @@ Zupas primary type is 'restaurant'
 Cafe Rio primary type is 'mexican_restaurant' 
 Olive Garden primary type is 'italian_restaurant'
 
-TODO: What happens when I change the radius. 
-
+! What happens when I change the radus? 
 
 Now zoom in and see what you can see. 
 
@@ -153,38 +149,4 @@ Loads in index.tsx
       v
 
 ```
-
-
-
-# TODAY 2025-04-25 09:51:40
-
-
-
-State of the union: It now shows a more accurate spot for your own location. 
-
-TODO: Use a third party API to get our actual street location instead of latitude and longitude. 
-
-
-
-# APP MAP 
-
-Entry Point: _layout.tsx 
--> 
-(tabs) / index.tsx
--> 
-index.tsx
-usePizzaPlaces hook. 
-It's a useEffect that runs on mount. 
-pizzaService.ts
-buildUserPrompt (prompts.ts) and SYSTEM_PROMPT
-
-
-returns a MapView
--> 
-shows user location 
-
-Maps all of the pizza places onto the map. 
-
-Shows a list of all of the pizza places in a cute little list. 
-
 
