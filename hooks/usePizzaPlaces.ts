@@ -16,6 +16,16 @@ function removeDuplicates(places: PizzaPlace[]) {
   });
 } 
 
+function applyFilterSecondaryType(places: PizzaPlace[], filterString: string): PizzaPlace[] {
+  const newPlaces: PizzaPlace[] = [];
+  for (const place of places) {
+    if (place.types.includes(filterString)) {
+      newPlaces.push(place);
+    }
+  }
+  return newPlaces;
+}
+
 /**
  * Custom hook to manage pizza place data and location services
  * Returns pizza places near the user's current location
@@ -36,26 +46,25 @@ export function usePizzaPlaces() {
     try {
       setLoading(true);
       setError(null);
-      const places = await fetchPlacesGrok(latitude, longitude);
-
-      // ! TODO: Test these series of steps and look in your console logs. 
-      // setPizzaPlaces(places); // here, we set pizza places to be the places we fetched from the API call. 
 
       const googlePlaces = await fetchPlacesGoogleAPI(latitude, longitude); 
-      console.log("ATTENTION: The places pulled by google were: ", googlePlaces);  
-      console.log("------------------------------------------------------------------------------------------------" );
       const uniqueGooglePlaces = removeDuplicates(googlePlaces);
-      console.log("ATTENTION: The unique places pulled by google were: ", uniqueGooglePlaces);  
-      console.log("------------------------------------------------------------------------------------------------" );
 
+      // add ids to the places for use later in PizzaPlaceList
       uniqueGooglePlaces.forEach((place: PizzaPlace, index: number) => {
-        place.id = index;
+        place.id = index.toString();
       });
-      setPizzaPlaces(uniqueGooglePlaces);
-      console.log("ATTENTION: The unique places pulled by google after adding ids were: ", uniqueGooglePlaces);  
-      console.log("------------------------------------------------------------------------------------------------" );
-      console.log("------------------------------------------------------------------------------------------------" );
 
+      // ! Add in some processing that only allows those that are ALSO italian_restaurants. 
+      // TODO: What is the call being made? 
+      const filter = "italian_restaurant"; 
+      const filteredPlaces = applyFilterSecondaryType(uniqueGooglePlaces, filter); 
+      console.log(`The places that match the filter: ${filter} are: `); 
+      console.log(filteredPlaces); 
+
+
+
+      setPizzaPlaces(uniqueGooglePlaces);
       // sort the places by distance
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch pizza places');

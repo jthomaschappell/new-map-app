@@ -4,22 +4,53 @@ note: LOOK AT THIS FIRST:
 STATE OF THE UNION: 
 
 
-TODO: Make it so that each item has a specific ID. 
-TODO: Print all the id's 
+! TODO: Try calling it from Postman instead. And it works. 
+
+For Olive Garden (places.displayName.text) 
+It has several types like: restaurant, italian_restaurant, 
+
+
+Zupas primary type is 'restaurant'
+Cafe Rio primary type is 'mexican_restaurant' 
+Olive Garden primary type is 'italian_restaurant'
+
+TODO: What happens when I change the radius. 
+
+
+Now zoom in and see what you can see. 
 
 *TEST UPS: 
 * 1) It pulls locations around me from the Google Maps API. 
 * 2) It pulls the restaurants
 * 3) It pulls the menu items 
 
+
+How can you customize? 
+
+By how far away (radius) 
+
+
+
+
+
+
+
+
+
+What are the parameters? Look in your documents. 
+
+
+
+
+
+
+
+
+
+
+
+
 * MY THOUGHTS: 
-
-
-* Ok, I was looking at the wrong thing. Markers are things that go onto the map, with a key, coordinate, etc. 
-
-* Then it takes the places and puts it into the PizzaPlacesList to map into cards. 
-
-* So, we can just have it pull from another source and give JSON and we'll be fine. 
 
 * Marker needs: 
 * - key

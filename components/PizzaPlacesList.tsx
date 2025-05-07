@@ -35,7 +35,7 @@ export function PizzaPlacesList({ places, loading, error }: PizzaPlacesListProps
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <ThemedView style={styles.placeItem}>
-            <ThemedText type="defaultSemiBold">{item.name}</ThemedText>
+            <ThemedText type="defaultSemiBold">{item.name} (id: {item.id})</ThemedText>
             <ThemedText>{item.distance} away</ThemedText>
             {item.rating && <ThemedText>Rating: {item.rating}/5</ThemedText>}
             <ThemedText>{item.address}</ThemedText>
