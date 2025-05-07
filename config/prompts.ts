@@ -6,7 +6,8 @@
 // const user_prompt = `Find ${DIET_TYPE} ${FOOD_TYPES} within 5mi of ${LATITUDE}, ${LONGITUDE}. ` + 
 //                    `Moderate price, casual dining. ` +
 //                    `Return 40 real menu items in JSON format with: ` + 
-//                    `item, price, restaurant, phone, address, and why I might like it (100 chars max) Just give me the JSON, no other text.`;
+//                    `item, price, restaurant, phone, address, and why I
+//  might like it (100 chars max) Just give me the JSON, no other text.`;
 
 export function buildTrampolineUserPrompt(latitude: number, longitude: number): string {
     return `Find` + 

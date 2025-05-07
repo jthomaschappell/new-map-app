@@ -3,6 +3,7 @@ import * as Location from 'expo-location';
 import { PizzaPlace } from '@/types/pizza_place';
 import { fetchPlacesGoogleAPI, fetchPlacesGrok, genericCallerGrok } from '@/services/pizzaService';
 import { withRepeat } from 'react-native-reanimated';
+import { MenuItem } from '@/types/menu_item';
 
 function removeDuplicates(places: PizzaPlace[]) {
   const seen = new Set();
@@ -58,52 +59,76 @@ export function usePizzaPlaces() {
         place.id = index.toString();
       });
 
-      // TODO: Now call this function with a userPrompt and a systemPrompt. 
+      // !: You need to pass it where you are so that it can calculate the distance and place it here in the List View. 
 
-      const filterString = "mexican_restaurant"; 
-      const userPrompt = 
-      `Use your knowledge of restaurants to tell` + 
-      `me which of these are ${filterString} restaurants?` + 
-      `Give me a modified list, where everything that is not a ${filterString} restaurant is removed.` + 
-      ` ${JSON.stringify(uniqueGooglePlaces)}.`; 
+      // TODO: Now generify it so that it's not pizza places anymore. 
 
-      const systemPrompt = "You are a helpful assistant " + 
-      "that can answer my questions. " + 
-      "You respond in a strict JSON format, that looks like this: " + 
-      `{
-        "places": [
-          {
-            "id": string,
-            "name": string,
-            "address": string,
-            "rating": number,
-            "distance": number,
-            "latitude": number,
-            "longitude": number,
-            "types": ["string", "string", "string", etc.]
-          }
-        ]
-      }`; 
+      // TODO: First, do a git commit. 
+
+      const userPrompt = `
+You will receive a list of up to 20 restaurants in JSON format, each with location data.
+Use this list to search the internet for menus from these restaurants.
+Extract popular or signature food items from each menu, aiming to return a total of **up to 40 items** overall.
+
+Some restaurants may not have public menus — if that’s the case, skip them or infer likely menu items based on restaurant type or name.
+
+For each menu item you return, include the following:
+- "name" (of the menu item, as a string)
+- "price" (as a number in USD, or null)
+- "restaurant" (name of the restaurant from the input)
+- "message" (a message to the user about why they might like the menu item, or why they should try it. Keep it to 100 characters or less.)
+
+Please return **only** the result in this JSON format:
+
+{
+  "menu_items": [
+    {
+      "id": "1",
+      "name": "Cheeseburger",
+      "price": 9.99,
+      "restaurant": "Bob's Burgers", 
+      "message": "This is a great menu item for a family of 4."
+    },
+    ...
+  ]
+}
+
+Here is the input list of restaurants:
+${JSON.stringify(uniqueGooglePlaces, null, 2)}
+`;
+
+const systemPrompt = `
+You are a helpful assistant that researches real-world data to help mobile users find local menu items.
+You can read structured JSON input, search the internet for restaurant menus, and return formatted results.
+Your goal is to return menu items in a clean, consistent JSON structure. Be accurate, practical, and concise.
+`;
 
       const response = await genericCallerGrok(userPrompt, systemPrompt); 
       console.log("The response from the generic caller to Grok is: "); 
       console.log(response); 
       // Parse the JSON string response into an object
       const parsedResponse = JSON.parse(response);
+
+      const menuItems: MenuItem[] = parsedResponse.menu_items;
+      console.log("The menu items are: "); 
+      console.log(menuItems); 
+
+      // TODO: Next up is taking the menu items and putting them into the list. 
       
-      // Convert the parsed response into PizzaPlace objects
-      const filteredPlaces = parsedResponse.places.map((place: any) => ({
-        id: place.id,
-        name: place.name,
-        address: place.address,
-        rating: place.rating,
-        latitude: place.latitude,
-        longitude: place.longitude,
-        types: place.types,
-        distance: place.distance
-      }));
-      console.log("The filtered food places are: "); 
-      console.log(filteredPlaces);
+      // ! This is for converting the response data into pizzaPlace objects. 
+      // // Convert the parsed response into PizzaPlace objects
+      // const filteredPlaces = parsedResponse.places.map((place: any) => ({
+      //   id: place.id,
+      //   name: place.name,
+      //   address: place.address,
+      //   rating: place.rating,
+      //   latitude: place.latitude,
+      //   longitude: place.longitude,
+      //   types: place.types,
+      //   distance: place.distance
+      // }));
+      // console.log("Grok says that the filtered list is: "); 
+      // console.log(filteredPlaces);
 
       setPizzaPlaces(uniqueGooglePlaces);
     } catch (err) {
