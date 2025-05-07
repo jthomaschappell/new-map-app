@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import * as Location from 'expo-location';
-import { PizzaPlace } from '@/types/pizza';
-import { fetchPlacesGoogleAPI, fetchPlacesGrok } from '@/services/pizzaService';
+import { PizzaPlace } from '@/types/pizza_place';
+import { fetchPlacesGoogleAPI, fetchPlacesGrok, genericCallerGrok } from '@/services/pizzaService';
+import { withRepeat } from 'react-native-reanimated';
 
 function removeDuplicates(places: PizzaPlace[]) {
   const seen = new Set();
@@ -11,12 +12,12 @@ function removeDuplicates(places: PizzaPlace[]) {
       return false;
     } else {
       seen.add(key); // if the place has not been seen, add it to the set
-      return true;
+      return true; 
     }
   });
 } 
 
-function applyFilterSecondaryType(places: PizzaPlace[], filterString: string): PizzaPlace[] {
+function filterPlacesByType(places: PizzaPlace[], filterString: string): PizzaPlace[] {
   const newPlaces: PizzaPlace[] = [];
   for (const place of places) {
     if (place.types.includes(filterString)) {
@@ -47,6 +48,8 @@ export function usePizzaPlaces() {
       setLoading(true);
       setError(null);
 
+      // ! Fetch places Grok testing. 
+
       const googlePlaces = await fetchPlacesGoogleAPI(latitude, longitude); 
       const uniqueGooglePlaces = removeDuplicates(googlePlaces);
 
@@ -55,17 +58,54 @@ export function usePizzaPlaces() {
         place.id = index.toString();
       });
 
-      // ! Add in some processing that only allows those that are ALSO italian_restaurants. 
-      // TODO: What is the call being made? 
-      const filter = "italian_restaurant"; 
-      const filteredPlaces = applyFilterSecondaryType(uniqueGooglePlaces, filter); 
-      console.log(`The places that match the filter: ${filter} are: `); 
-      console.log(filteredPlaces); 
+      // TODO: Now call this function with a userPrompt and a systemPrompt. 
 
+      const filterString = "mexican_restaurant"; 
+      const userPrompt = 
+      `Use your knowledge of restaurants to tell` + 
+      `me which of these are ${filterString} restaurants?` + 
+      `Give me a modified list, where everything that is not a ${filterString} restaurant is removed.` + 
+      ` ${JSON.stringify(uniqueGooglePlaces)}.`; 
 
+      const systemPrompt = "You are a helpful assistant " + 
+      "that can answer my questions. " + 
+      "You respond in a strict JSON format, that looks like this: " + 
+      `{
+        "places": [
+          {
+            "id": string,
+            "name": string,
+            "address": string,
+            "rating": number,
+            "distance": number,
+            "latitude": number,
+            "longitude": number,
+            "types": ["string", "string", "string", etc.]
+          }
+        ]
+      }`; 
+
+      const response = await genericCallerGrok(userPrompt, systemPrompt); 
+      console.log("The response from the generic caller to Grok is: "); 
+      console.log(response); 
+      // Parse the JSON string response into an object
+      const parsedResponse = JSON.parse(response);
+      
+      // Convert the parsed response into PizzaPlace objects
+      const filteredPlaces = parsedResponse.places.map((place: any) => ({
+        id: place.id,
+        name: place.name,
+        address: place.address,
+        rating: place.rating,
+        latitude: place.latitude,
+        longitude: place.longitude,
+        types: place.types,
+        distance: place.distance
+      }));
+      console.log("The filtered food places are: "); 
+      console.log(filteredPlaces);
 
       setPizzaPlaces(uniqueGooglePlaces);
-      // sort the places by distance
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch pizza places');
     } finally {
@@ -95,8 +135,6 @@ export function usePizzaPlaces() {
         });
 
         let response = await Location.reverseGeocodeAsync(location.coords);
-        console.log(`ATTENTION MERE MORTALS, YOU ARE HERE: ${response[0].formattedAddress}`);
-        console.log(`ATTENTION MERE MORTALS, LATITUDE AND LONGITUDE: ${location.coords.latitude}, ${location.coords.longitude}`);
 
         setLocation(location);
         await fetchPizzaPlaces(location.coords.latitude, location.coords.longitude);

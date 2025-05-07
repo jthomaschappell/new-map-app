@@ -87,52 +87,6 @@ address
 latitude 
 longitude 
 
-----------
-
-
-
-
-// Assume this is the JSON response from a fetch request
-function extractRestaurantInfo(response) {
-  // Get the first place from the response
-  const place = response.places[0];
-  
-  if (!place) {
-    console.log("No place found in the response");
-    return null;
-  }
-  
-  // Extract the requested information
-  const restaurantInfo = {
-    name: place.displayName.text,
-    rating: place.rating,
-    address: place.formattedAddress,
-    latitude: place.location.latitude,
-    longitude: place.location.longitude,
-    // Note: distance is not directly available for the main restaurant
-  };
-  
-  console.log("Restaurant Information:");
-  console.log(`Name: ${restaurantInfo.name}`);
-  console.log(`Rating: ${restaurantInfo.rating}`);
-  console.log(`Address: ${restaurantInfo.address}`);
-  console.log(`Latitude: ${restaurantInfo.latitude}`);
-  console.log(`Longitude: ${restaurantInfo.longitude}`);
-  
-  return restaurantInfo;
-}
-
-// Usage (assuming 'response' is your JSON data):
-const restaurantInfo = extractRestaurantInfo(response);
-
-
-
-
-
-
--------------
-
-
 DONE: How are the pizza places rendered in the frontend? 
 
 

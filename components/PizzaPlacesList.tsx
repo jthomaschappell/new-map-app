@@ -1,7 +1,7 @@
 import { StyleSheet, FlatList } from 'react-native';
 import { ThemedText } from './ThemedText';
 import { ThemedView } from './ThemedView';
-import { PizzaPlace } from '@/types/pizza';
+import { PizzaPlace } from '@/types/pizza_place';
 
 interface PizzaPlacesListProps {
   places: PizzaPlace[];

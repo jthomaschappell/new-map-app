@@ -8,14 +8,7 @@
 //                    `Return 40 real menu items in JSON format with: ` + 
 //                    `item, price, restaurant, phone, address, and why I might like it (100 chars max) Just give me the JSON, no other text.`;
 
-/**
- * Builds the prompt for the Grok API to find nearby pizza places
- * @param latitude - The latitude coordinate
- * @param longitude - The longitude coordinate
- * @returns A string prompt for the API
- */
-
-export function buildUserPrompt(latitude: number, longitude: number): string {
+export function buildTrampolineUserPrompt(latitude: number, longitude: number): string {
     return `Find` + 
         // `food places` + 
         `trampoline parks` + 
@@ -29,11 +22,8 @@ export function buildUserPrompt(latitude: number, longitude: number): string {
         `Return only as valid JSON.`;
 }
 
-/**
- * System prompt that defines the expected response format for pizza places
- */
-
-export const SYSTEM_PROMPT = `You are a helpful assistant ` +
+export function buildTrampolineSystemPrompt(): string {
+    return `You are a helpful assistant ` +
     // `that provides information about nearby food places. Not just pizza places, all types of food. ` +
     `that provides information about nearby trampoline parks. ` +
     `Return the data in the following JSON format: ` +
@@ -48,4 +38,5 @@ export const SYSTEM_PROMPT = `You are a helpful assistant ` +
     `      "longitude": number ` +
     `    } ` +
     `  ] ` +
-    `}`; 
+    `}`;
+}

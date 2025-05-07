@@ -1,5 +1,5 @@
-import { PizzaPlace } from '@/types/pizza';
-import { buildUserPrompt, SYSTEM_PROMPT } from '@/config/prompts';
+import { PizzaPlace } from '@/types/pizza_place';
+import { buildTrampolineSystemPrompt, buildTrampolineUserPrompt } from '@/config/prompts';
 import Constants from 'expo-constants';
 
 // Get environment variables from Expo Constants
@@ -32,6 +32,7 @@ if (!GROK_API_KEY) {
 if (!GOOGLE_PLACES_API_ENDPOINT) {
   throw new Error('Missing required environment variable: GOOGLE_PLACES_API_ENDPOINT');
 }
+
 
 /**
  * Fetches nearby places using the Google Places API
@@ -99,6 +100,46 @@ export async function fetchPlacesGoogleAPI(latitude: number, longitude: number):
   }
 }
 
+
+export async function genericCallerGrok(userPrompt: string, systemPrompt:string) {
+
+  try {
+    const response = await fetch(GROK_API_ENDPOINT as string, {
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json', 
+        'Accept': 'application/json', 
+        'Authorization': `Bearer ${GROK_API_KEY}`, 
+      },
+      body: JSON.stringify({
+        model: "grok-2-latest", 
+        messages: [
+          {
+            role: "system", 
+            content: systemPrompt, 
+          },
+          {
+            role: "user", 
+            content: userPrompt, 
+          }, 
+        ], 
+        stream: false, 
+        temperature: 0, 
+      }),
+    }); 
+
+    if (!response.ok) {
+      throw new Error(`Grok API request failed with status: ${response.status}`); 
+    }
+    const data = await response.json(); 
+    return data.choices[0].message.content; 
+
+  } catch (error) {
+    console.error("Error with the generic caller to Grok", error); 
+  }
+}
+
+
 /**
  * Fetches nearby pizza places using the Grok API
  * @param latitude - The latitude coordinate to search from
@@ -121,11 +162,11 @@ export async function fetchPlacesGrok(latitude: number, longitude: number): Prom
         messages: [
           {
             role: "system",
-            content: SYSTEM_PROMPT
+            content: buildTrampolineSystemPrompt(),
           },
           {
             role: "user",
-            content: buildUserPrompt(latitude, longitude),
+            content: buildTrampolineUserPrompt(latitude, longitude),
           }
         ],
         stream: false,
@@ -134,7 +175,7 @@ export async function fetchPlacesGrok(latitude: number, longitude: number): Prom
     });
 
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      throw new Error(`Grok API request (fetch places) failed with status ${response.status}`);
     }
 
     const data = await response.json();

@@ -1,4 +1,4 @@
-import { PizzaPlace } from '@/types/pizza';
+import { PizzaPlace } from '@/types/pizza_place';
 import { fetchPlacesGoogleAPI } from './pizzaService';
 
 // Mock data that matches the Google Places API response structure
