@@ -3,16 +3,13 @@
  * @param likedFoodItems - Array of food items the user has liked in the past.
  * @param uniqueGooglePlaces - Array of restaurant objects with location data.
  * @param dietaryRestrictions - Array of dietary restrictions selected by the user.
- * @param experienceTypes - Array of dining experience preferences selected by the user.
- * @param cuisineTypes - Array of cuisine preferences selected by the user.
  * @returns An object containing the userPrompt and systemPrompt strings.
  */
 export function generateMenuSearchPrompts(
     likedFoodItems: string[],
     uniqueGooglePlaces: any[],
     dietaryRestrictions: string[] = [],
-    experienceTypes: string[] = [],
-    cuisineTypes: string[] = []
+    experiences: string[] = []
 ): { userPrompt: string; systemPrompt: string } {
     const userPrompt = `
   You will receive a list of up to 20 restaurants in JSON format, each with location data.
@@ -68,18 +65,13 @@ export function generateMenuSearchPrompts(
     - Halal/Kosher: Follows specific religious preparation requirements
     - Allergen restrictions: No trace of the specified allergen (Nut Free, Shellfish Free, etc.)
     ` : 'No dietary restrictions specified.'}
-  
-  ${experienceTypes.length > 0 ? 
+
+    ${experiences.length > 0 ? 
     `Experience preferences (prioritize restaurants matching these experiences):
-    ${experienceTypes.join(", ")}` : 'No experience preferences specified.'}
-  
-  ${cuisineTypes.length > 0 ? 
-    `Cuisine preferences (prioritize restaurants matching these cuisines):
-    ${cuisineTypes.join(", ")}` : 'No cuisine preferences specified.'}
+    ${experiences.join(", ")}` : 'No experience preferences specified.'}
   
   Give strong preference to restaurants and menu items that match these preferences and restrictions.
   Set matchesDietary to true ONLY if the menu item satisfies ALL dietary restrictions.
-  Set matchesPreferences to true if the restaurant type aligns with the user's experience and cuisine preferences.
   
   Here is the input list of restaurants:
   ${JSON.stringify(uniqueGooglePlaces, null, 2)}
@@ -92,12 +84,9 @@ export function generateMenuSearchPrompts(
   Your primary responsibilities:
   1. Find and analyze restaurant menus from the provided list
   2. Strictly filter menu items based on dietary restrictions (this is critical for user health and safety)
-  3. Match restaurants to user experience preferences (breakfast, fine dining, etc.)
-  4. Match restaurants to cuisine preferences (Italian, Mexican, etc.)
-  5. Return clean, well-structured JSON with menu items that best match the user's needs
+  3. Return clean, well-structured JSON with menu items that best match the user's needs
   
   For dietary restrictions, be extremely careful and conservative - when in doubt, exclude an item.
-  For experience and cuisine matching, use both explicit restaurant information and implicit knowledge.
   
   Your goal is to return menu items in a clean, consistent JSON structure. Be accurate, practical, and concise.
   `;

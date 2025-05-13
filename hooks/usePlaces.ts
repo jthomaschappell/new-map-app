@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import * as Location from 'expo-location';
 import { Place } from '@/types/place';
-import { fetchPlacesGoogleAPI, genericCallerGrok } from '@/services/placeService';
+import { fetchPlacesGoogleAPI, filterPlacesByTypes, genericCallerGrok } from '@/services/placeService';
 import { withRepeat } from 'react-native-reanimated';
 import { MenuItem } from '@/types/menu_item';
 import { generateMenuSearchPrompts } from '@/config/prompts';
@@ -20,14 +20,21 @@ function removeDuplicates(places: Place[]) {
   });
 }
 
-function filterPlacesByType(places: Place[], filterString: string): Place[] {
-  const newPlaces: Place[] = [];
-  for (const place of places) {
-    if (place.types.includes(filterString)) {
-      newPlaces.push(place);
-    }
-  }
-  return newPlaces; 
+function getRestaurantType(cuisine: string) {
+  const mapping = {
+    "Italian": "italian_restaurant",
+    "Mexican": "mexican_restaurant", 
+    "Chinese": "chinese_restaurant",
+    "Japanese": "japanese_restaurant",
+    "Thai": "thai_restaurant",
+    "Indian": "indian_restaurant",
+    "Greek": "greek_restaurant",
+    "Korean": "korean_restaurant",
+    "Vietnamese": "vietnamese_restaurant",
+    "American": "american_restaurant"
+  };
+
+  return mapping[cuisine as keyof typeof mapping];
 }
 
 /**
@@ -51,8 +58,23 @@ export function usePlaces() {
       setLoading(true);
       setError(null);
 
-      const googlePlaces = await fetchPlacesGoogleAPI(latitude, longitude);
-      const uniqueGooglePlaces = removeDuplicates(googlePlaces);
+      // ! Remove the redundancies here. 
+      const myCuisines = [
+        "thai_restaurant",
+        "japanese_restaurant",
+        "korean_restaurant"
+      ];
+
+      const googlePlaces = await fetchPlacesGoogleAPI(latitude, longitude, myCuisines);
+
+      console.log("DEBUGGING AND TESTING: The google places are: ");
+      console.log(googlePlaces);
+
+      // A filter list of experiences.
+
+      // const filteredGooglePlaces = filterPlacesByTypes(googlePlaces, myCuisines);
+      // console.log("DEBUGGING AND TESTING: The filtered google places are: ");
+      // console.log(filteredGooglePlaces);
 
       const likedFoodItems = ["spicy chicken sandwich", "pad thai", "bubble tea", "truffle fries"];
 
@@ -60,11 +82,7 @@ export function usePlaces() {
 
       const myExperiences = EXPERIENCES.filter((option) => option === "Dinner Sit Down" || option === "Hidden Gem" || option === "Fine Dining");
 
-      // const myCuisines = CUISINES.filter((option) => option === "Thai" || option === "Japanese" || option === "Korean");
-
-      const myCuisines = CUISINES; 
-
-      const { userPrompt, systemPrompt } = generateMenuSearchPrompts(likedFoodItems, uniqueGooglePlaces, myDietaryRestrictions, myExperiences, myCuisines);
+      const { userPrompt, systemPrompt } = generateMenuSearchPrompts(likedFoodItems, googlePlaces, myDietaryRestrictions, myExperiences);
 
       const response = await genericCallerGrok(userPrompt, systemPrompt);
       console.log("The response from the generic caller to Grok is: ");
@@ -77,7 +95,7 @@ export function usePlaces() {
       console.log(menuItems);
 
       // Set both pizza places and menu items
-      setPlaces(uniqueGooglePlaces);
+      setPlaces(googlePlaces);
       setMenuItems(menuItems);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch places');
@@ -115,7 +133,7 @@ export function usePlaces() {
         setError(err instanceof Error ? err.message : 'Failed to get location');
       }
     })();
-  }, [fetchPlaces]); 
+  }, [fetchPlaces]);
 
   /**
    * Callback to manually refresh places data

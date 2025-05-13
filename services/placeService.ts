@@ -37,10 +37,11 @@ if (!GOOGLE_PLACES_API_ENDPOINT) {
  * Fetches nearby places using the Google Places API
  * @param latitude - The latitude coordinate to search from
  * @param longitude - The longitude coordinate to search from
- * @returns Promise<PizzaPlace[]> - Array of places
+ * @param cuisine - Array of cuisine types to include in the search
+ * @returns Promise<Place[]> - Array of places
  * @throws Error if API request fails or response parsing fails
  */
-export async function fetchPlacesGoogleAPI(latitude: number, longitude: number): Promise<Place[]> {
+export async function fetchPlacesGoogleAPI(latitude: number, longitude: number, cuisine: string[]): Promise<Place[]> {
   try {
     const response = await fetch(GOOGLE_PLACES_API_ENDPOINT as string , {
       method: 'POST',
@@ -64,11 +65,7 @@ export async function fetchPlacesGoogleAPI(latitude: number, longitude: number):
         },
         rankPreference: "DISTANCE",
         maxResultCount: 20,
-        includedTypes: [
-          // "italian_restaurant", 
-          // "mexican_restaurant", 
-          "restaurant"
-        ]
+        includedTypes: cuisine
       })
     });
 
@@ -200,4 +197,21 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
   const distance = earthRadius * c;
   // Return distance rounded to 2 decimal places
   return Math.round(distance * 100) / 100;
+}
+
+/**
+ * Filters an array of place objects, keeping only those whose 'types' array
+ * contains at least one of the provided filter strings.
+ * 
+ * @param places - Array of place objects (each with a 'types' array)
+ * @param filterTypes - Array of type strings to filter by (e.g., ['thai_restaurant', 'japanese_restaurant'])
+ * @returns Filtered array of place objects
+ */
+export function filterPlacesByTypes(
+  places: Array<{ types: string[] }>,
+  filterTypes: string[]
+) {
+  return places.filter(place =>
+    place.types.some(type => filterTypes.includes(type))
+  );
 }
