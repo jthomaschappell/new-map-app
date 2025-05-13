@@ -36,16 +36,17 @@ export default function HomeScreen() {
             title="You are here"
           />
         )}
-        {/* Pizza places markers */}
-        {places.map((place) => (
+        {/* Other map markers */}
+        {menuItems.map((menuItem) => (
           <Marker
-            key={place.id}
+            key={menuItem.id}
             coordinate={{
-              latitude: place.latitude,
-              longitude: place.longitude,
+              latitude: menuItem.latitude,
+              longitude: menuItem.longitude,
             }}
-            title={place.name}
-            description={place.address}
+            title={menuItem.name}
+            description={menuItem.restaurant}
+            // TODO: Test this out. 
           />
         ))}
       </MapView>
@@ -57,6 +58,7 @@ export default function HomeScreen() {
         <Ionicons name="refresh" size={24} color="black" />
       </Pressable>
 
+      {/* Display in list format */}
       <MenuItemsList
         menuItems={menuItems}
         loading={loading}

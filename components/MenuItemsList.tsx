@@ -34,11 +34,11 @@ export function MenuItemsList({ menuItems, loading, error }: MenuItemsListProps)
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <ThemedView style={styles.menuItem}>
-            <ThemedText type="defaultSemiBold">{item.name}</ThemedText>
+            <ThemedText type="defaultSemiBold">{item.name} ({item.distance} miles away)</ThemedText>
             <ThemedText>From: {item.restaurant}</ThemedText>
             {item.price && <ThemedText>${item.price.toFixed(2)}</ThemedText>}
             <ThemedText style={styles.message}>{item.message}</ThemedText>
-            <ThemedText>Distance: {item.distance} miles</ThemedText>
+            <ThemedText>Id: {item.id}</ThemedText>
           </ThemedView>
         )}
       />

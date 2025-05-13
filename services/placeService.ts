@@ -63,7 +63,7 @@ export async function fetchPlacesGoogleAPI(latitude: number, longitude: number):
             radius: 30000.0
           }
         },
-        // rankPreference: "DISTANCE",
+        rankPreference: "DISTANCE",
         maxResultCount: 20,
         includedTypes: [
           // "italian_restaurant", 
@@ -111,11 +111,11 @@ export async function fetchPlacesGoogleAPI(latitude: number, longitude: number):
 
 export async function genericCallerGrok(userPrompt: string, systemPrompt:string) {
 
-  console.log("Debugging logs:")
-  console.log("The user prompt is: "); 
-  console.log(userPrompt); 
-  console.log("The system prompt is: "); 
-  console.log(systemPrompt); 
+  // console.log("Debugging logs:")
+  // console.log("The user prompt is: "); 
+  // console.log(userPrompt); 
+  // console.log("The system prompt is: "); 
+  // console.log(systemPrompt); 
 
   try {
     const response = await fetch(GROK_API_ENDPOINT as string, {

@@ -13,10 +13,10 @@ function removeDuplicates(places: Place[]) {
       return false;
     } else {
       seen.add(key); // if the place has not been seen, add it to the set
-      return true; 
+      return true;
     }
   });
-} 
+}
 
 function filterPlacesByType(places: Place[], filterString: string): Place[] {
   const newPlaces: Place[] = [];
@@ -41,7 +41,6 @@ export function usePlaces() {
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
 
   /**
-   * 
    * Fetches places for given coordinates
    * Manages loading and error states during the fetch operation
    */
@@ -50,13 +49,10 @@ export function usePlaces() {
       setLoading(true);
       setError(null);
 
-      const googlePlaces = await fetchPlacesGoogleAPI(latitude, longitude); 
+      const googlePlaces = await fetchPlacesGoogleAPI(latitude, longitude);
       const uniqueGooglePlaces = removeDuplicates(googlePlaces);
 
-      // TODO: Check to make sure nothing broke on the frontend. 
-      // TODO: It should give the latitude and longitude in the Grok API response. 
-
-      // !: You need to pass it where you are so that it can calculate the distance and place it here in the List View. 
+      const likedFoodItems = ["spicy chicken sandwich", "pad thai", "bubble tea", "truffle fries"];
 
       const userPrompt = `
 You will receive a list of up to 20 restaurants in JSON format, each with location data.
@@ -82,7 +78,7 @@ Please return **only** the result in this JSON format:
       "id": "1",
       "name": "Cheeseburger",
       "price": 9.99,
-      "restaurant": "Bob's Burgers", 
+      "restaurant": "Bob's Burgers",
       "latitude": 37.774929,
       "longitude": -122.419416,
       "distance": "1.5",
@@ -92,25 +88,30 @@ Please return **only** the result in this JSON format:
   ]
 }
 
+Here is a list of food items this user has liked in the past:
+${likedFoodItems.join(", ")}
+
+Give preference to restaurants and menu items that match or resemble these preferences.
+
 Here is the input list of restaurants:
 ${JSON.stringify(uniqueGooglePlaces, null, 2)}
 `;
 
-const systemPrompt = `
+      const systemPrompt = `
 You are a helpful assistant that researches real-world data to help mobile users find local menu items.
 You can read structured JSON input, search the internet for restaurant menus, and return formatted results.
 Your goal is to return menu items in a clean, consistent JSON structure. Be accurate, practical, and concise.
 `;
 
-      const response = await genericCallerGrok(userPrompt, systemPrompt); 
-      console.log("The response from the generic caller to Grok is: "); 
-      console.log(response); 
+      const response = await genericCallerGrok(userPrompt, systemPrompt);
+      console.log("The response from the generic caller to Grok is: ");
+      console.log(response);
       // Parse the JSON string response into an object
       const parsedResponse = JSON.parse(response);
 
       const menuItems: MenuItem[] = parsedResponse.menu_items;
-      console.log("The menu items are: "); 
-      console.log(menuItems); 
+      console.log("The menu items are: ");
+      console.log(menuItems);
 
       // Set both pizza places and menu items
       setPlaces(uniqueGooglePlaces);
@@ -120,7 +121,7 @@ Your goal is to return menu items in a clean, consistent JSON structure. Be accu
     } finally {
       setLoading(false);
     }
-  }, []);  // this runs only when component mounts, or when it's called 
+  }, []); // this runs only when component mounts, or when it's called
 
   /**
    * Effect hook that runs on mount to:
@@ -151,7 +152,7 @@ Your goal is to return menu items in a clean, consistent JSON structure. Be accu
         setError(err instanceof Error ? err.message : 'Failed to get location');
       }
     })();
-  }, [fetchPlaces]);  // this runs anytime fetchPlaces changes. 
+  }, [fetchPlaces]); // this runs anytime fetchPlaces changes.
 
   /**
    * Callback to manually refresh places data
@@ -171,4 +172,4 @@ Your goal is to return menu items in a clean, consistent JSON structure. Be accu
     location,
     refreshPlaces,
   };
-} 
+}

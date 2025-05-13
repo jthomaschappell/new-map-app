@@ -28,21 +28,7 @@ By how far away (radius)
 
 
 
-
-
-
-
-
 What are the parameters? Look in your documents. 
-
-
-
-
-
-
-
-
-
 
 
 
@@ -147,10 +133,6 @@ Actually calls Grok to get the pizza places using the prompts from prompts.ts
 Loads in index.tsx
       |
       v
-
 ```
 
-TODO: Have it give the latitude longitude on the menu item. 
-
-TODO: Have it give the calculated distance on the menu item. 
 
