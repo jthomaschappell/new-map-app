@@ -1,23 +1,49 @@
 import { StyleSheet, Dimensions, Pressable } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, Region } from 'react-native-maps';
 import { ThemedView } from '@/components/ThemedView';
 import { usePlaces } from '@/hooks/usePlaces';
 import { Ionicons } from '@expo/vector-icons';
+import { useState, useEffect } from 'react';
+import { GOOGLE_LATITUDE, GOOGLE_LONGITUDE, PROVO_LATITUDE, PROVO_LONGITUDE } from '@/constants/constants';
 
 export default function MapScreen() {
   const { menuItems, loading, error, location, refreshPlaces } = usePlaces();
+  const [region, setRegion] = useState<Region | undefined>(undefined);
+
+  // Set initial region when location is available
+  useEffect(() => {
+    if (location) {
+      setRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    }
+  }, [location]);
+
+  useEffect(() => {
+    if (region) {
+      console.log("DEBUGGING AND TESTING REGION CHANGE: Region changed!");
+      console.log("DEBUGGING AND TESTING REGION CHANGE: New region is ", region);
+    }
+  }, [region]);
+  // ! TEST: Change the default region to be my location, not San Francisco. 
+
   return (
     <ThemedView style={styles.container}>
       <MapView
         style={styles.map}
         initialRegion={{
-          latitude: location?.coords?.latitude || 37.78825,
-          longitude: location?.coords?.longitude || -122.4324,
+          latitude: location?.coords?.latitude || GOOGLE_LATITUDE,
+          longitude: location?.coords?.longitude || GOOGLE_LONGITUDE,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
         showsUserLocation={true}
         showsMyLocationButton={true}
+        region={region}
+        onRegionChangeComplete={setRegion}
       >
         {location && (
           <Marker
@@ -41,9 +67,13 @@ export default function MapScreen() {
           />
         ))}
       </MapView>
-      <Pressable 
+      <Pressable
         style={styles.refreshButton}
-        onPress={refreshPlaces}
+        onPress={() => {
+          if (region) {
+            refreshPlaces(region.latitude, region.longitude);
+          }
+        }}
       >
         <Ionicons name="refresh" size={24} color="black" />
       </Pressable>

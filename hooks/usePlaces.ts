@@ -58,7 +58,6 @@ export function usePlaces() {
       setLoading(true);
       setError(null);
 
-      // ! Remove the redundancies here. 
       const myCuisines = [
         "thai_restaurant",
         "japanese_restaurant",
@@ -69,12 +68,6 @@ export function usePlaces() {
 
       console.log("DEBUGGING AND TESTING: The google places are: ");
       console.log(googlePlaces);
-
-      // A filter list of experiences.
-
-      // const filteredGooglePlaces = filterPlacesByTypes(googlePlaces, myCuisines);
-      // console.log("DEBUGGING AND TESTING: The filtered google places are: ");
-      // console.log(filteredGooglePlaces);
 
       const likedFoodItems = ["spicy chicken sandwich", "pad thai", "bubble tea", "truffle fries"];
 
@@ -136,11 +129,13 @@ export function usePlaces() {
   }, [fetchPlaces]);
 
   /**
-   * Callback to manually refresh places data
-   * Only works if we have a valid location
+   * Accepts optional latitude and longitude to refresh based on map center
    */
-  const refreshPlaces = useCallback(async () => {
-    if (location) {
+  const refreshPlaces = useCallback(async (latitude?: number, longitude?: number) => {
+    console.log("DEBUGGING AND TESTING REFRESHING PLACES: Refreshing places");
+    if (latitude !== undefined && longitude !== undefined) {
+      await fetchPlaces(latitude, longitude);
+    } else if (location) {
       await fetchPlaces(location.coords.latitude, location.coords.longitude);
     }
   }, [location, fetchPlaces]);
@@ -154,3 +149,6 @@ export function usePlaces() {
     refreshPlaces,
   };
 }
+// TODO: Reload the app and see if region changes when we move. 
+
+// ! It looks like region changes when we move. 
