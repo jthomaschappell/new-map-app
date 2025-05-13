@@ -9,7 +9,7 @@ import { Place } from "@/types/place";
  */
 export function calculateRadius(region: Region) {
     const metersPerDegree = 111000;
-    let radius = (region.latitudeDelta / 2) * metersPerDegree;
+    let radius = (region.longitudeDelta / 2) * metersPerDegree;
     radius = Math.min(radius, 5000); // Clamp to 5000 meters
     return radius;
 }

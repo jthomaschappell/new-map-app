@@ -5,7 +5,7 @@ import { usePlaces } from '@/hooks/usePlaces';
 import { Ionicons } from '@expo/vector-icons';
 import { useState, useEffect } from 'react';
 import { GOOGLE_LATITUDE, GOOGLE_LONGITUDE, PROVO_LATITUDE, PROVO_LONGITUDE } from '@/constants/constants';
-import { calculateRadius } from '@/app/helper-functions/helper_functions';
+import { calculateRadius } from '@/helper-functions/helper_functions';
 export default function MapScreen() {
   const { menuItems, loading, error, location, refreshPlaces } = usePlaces();
   const [region, setRegion] = useState<Region | undefined>(undefined);
@@ -34,7 +34,10 @@ export default function MapScreen() {
       console.log("DEBUGGING AND TESTING REGION CHANGE: New region is ", region);
     }
   }, [region]);
-  // If there's a problem, it could be the direct load of the Android from Cursor. 
+
+  // ! TEST the calculation of the radius and using that to search. 
+  // ! We should always be within the screen. 
+  // ! When we do the initial load, it is NOT always within the screen. 
 
   // ! TEST: Test the refreshPlaces. 
   /**
@@ -87,7 +90,6 @@ export default function MapScreen() {
         onPress={() => {
           if (region) {
             // Calculate radius in meters based on latitudeDelta
-            // TODO: Put this into a helper function. 
             const radius = calculateRadius(region);
             refreshPlaces(region.latitude, region.longitude, radius);
           }

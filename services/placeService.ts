@@ -1,4 +1,4 @@
-import { calculateDistance } from '@/app/helper-functions/helper_functions';
+import { calculateDistance } from '@/helper-functions/helper_functions';
 import { MAX_SEARCH_RADIUS } from '@/constants/constants';
 import { Place } from '@/types/place';
 import Constants from 'expo-constants';
@@ -67,7 +67,7 @@ export async function fetchPlacesGoogleAPI(latitude: number, longitude: number, 
           }
         },
         // Note: might cause an error if both "radius" and "rankPreference" are included.
-        rankPreference: "DISTANCE",  
+        // rankPreference: "DISTANCE",  
         maxResultCount: 20,
         includedTypes: cuisine
       })
