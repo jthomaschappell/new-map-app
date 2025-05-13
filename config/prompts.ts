@@ -1,58 +1,18 @@
 /**
- * Configuration file for all API prompts
- */
-
-// Example of previous prompt format kept for reference
-// const user_prompt = `Find ${DIET_TYPE} ${FOOD_TYPES} within 5mi of ${LATITUDE}, ${LONGITUDE}. ` + 
-//                    `Moderate price, casual dining. ` +
-//                    `Return 40 real menu items in JSON format with: ` + 
-//                    `item, price, restaurant, phone, address, and why I
-//  might like it (100 chars max) Just give me the JSON, no other text.`;
-
-export function buildTrampolineUserPrompt(latitude: number, longitude: number): string {
-    return `Find` +
-        // `food places` + 
-        `trampoline parks` +
-        `within 10 miles of latitude ${latitude} and longitude ${longitude}. ` +
-        // `within 5 miles of 865 N 160 W. ` +
-        // `Moderate price, casual dining. ` +
-        `Return 10 places, unless you can only find less than 10. ` +
-        `Include their names, distances, ratings, addresses, and coordinates. ` +
-        `Do NOT make up places, or catastrophic consequences will occur. ` +
-        `Triple check your work and make sure that you have the correct address, or the world will end. ` +
-        `Return only as valid JSON.`;
-}
-
-export function buildTrampolineSystemPrompt(): string {
-    return `You are a helpful assistant ` +
-        // `that provides information about nearby food places. Not just pizza places, all types of food. ` +
-        `that provides information about nearby trampoline parks. ` +
-        `Return the data in the following JSON format: ` +
-        `{ ` +
-        `  "places": [ ` +
-        `    { ` +
-        `      "name": string, ` +
-        `      "distance": string, ` +
-        `      "rating": number, ` +
-        `      "address": string, ` +
-        `      "latitude": number, ` +
-        `      "longitude": number ` +
-        `    } ` +
-        `  ] ` +
-        `}`;
-}
-
-/**
  * Generates user and system prompts for searching restaurant menus and extracting menu items.
  * @param likedFoodItems - Array of food items the user has liked in the past.
  * @param uniqueGooglePlaces - Array of restaurant objects with location data.
- * @param myDietaryRestrictions - Array of dietary restrictions the user has.
+ * @param dietaryRestrictions - Array of dietary restrictions selected by the user.
+ * @param experienceTypes - Array of dining experience preferences selected by the user.
+ * @param cuisineTypes - Array of cuisine preferences selected by the user.
  * @returns An object containing the userPrompt and systemPrompt strings.
  */
 export function generateMenuSearchPrompts(
     likedFoodItems: string[],
     uniqueGooglePlaces: any[],
-    myDietaryRestrictions: string[]
+    dietaryRestrictions: string[] = [],
+    experienceTypes: string[] = [],
+    cuisineTypes: string[] = []
 ): { userPrompt: string; systemPrompt: string } {
     const userPrompt = `
   You will receive a list of up to 20 restaurants in JSON format, each with location data.
@@ -69,6 +29,8 @@ export function generateMenuSearchPrompts(
   - "latitude" (the latitude of the restaurant)
   - "longitude" (the longitude of the restaurant)
   - "distance" (the distance from the user's current location to the restaurant in miles)
+  - "matchesDietary" (boolean indicating if this item matches all the user's dietary restrictions)
+  - "matchesPreferences" (boolean indicating if this menu item aligns with user's preferences)
   
   Please return **only** the result in this JSON format. Here's an example: 
   
@@ -82,19 +44,42 @@ export function generateMenuSearchPrompts(
         "latitude": 37.774929,
         "longitude": -122.419416,
         "distance": "1.5",
+        "matchesDietary": true,
+        "matchesPreferences": true,
         "message": "This is a great menu item for a family of 4."
       },
       ...
     ]
   }
   
-  Here is a list of food items this user has liked in the past:
+  ### User Preferences ###
+  
+  Food items this user has liked in the past:
   ${likedFoodItems.join(", ")}
   
-  Here is a list of dietary restrictions this user has:
-  ${myDietaryRestrictions.join(", ")}
+  ${dietaryRestrictions.length > 0 ? 
+    `Dietary restrictions (IMPORTANT - strictly filter out non-compliant items):
+    ${dietaryRestrictions.join(", ")}
+    
+    Please carefully analyze each menu item to ensure it meets these dietary requirements. For example:
+    - Vegan: No animal products whatsoever (no meat, dairy, eggs, honey, etc.)
+    - Vegetarian: No meat but may include dairy, eggs, or honey
+    - Gluten Free: No wheat, barley, rye, or derivatives
+    - Halal/Kosher: Follows specific religious preparation requirements
+    - Allergen restrictions: No trace of the specified allergen (Nut Free, Shellfish Free, etc.)
+    ` : 'No dietary restrictions specified.'}
   
-  Give preference to restaurants and menu items that match or resemble these preferences.
+  ${experienceTypes.length > 0 ? 
+    `Experience preferences (prioritize restaurants matching these experiences):
+    ${experienceTypes.join(", ")}` : 'No experience preferences specified.'}
+  
+  ${cuisineTypes.length > 0 ? 
+    `Cuisine preferences (prioritize restaurants matching these cuisines):
+    ${cuisineTypes.join(", ")}` : 'No cuisine preferences specified.'}
+  
+  Give strong preference to restaurants and menu items that match these preferences and restrictions.
+  Set matchesDietary to true ONLY if the menu item satisfies ALL dietary restrictions.
+  Set matchesPreferences to true if the restaurant type aligns with the user's experience and cuisine preferences.
   
   Here is the input list of restaurants:
   ${JSON.stringify(uniqueGooglePlaces, null, 2)}
@@ -103,6 +88,17 @@ export function generateMenuSearchPrompts(
     const systemPrompt = `
   You are a helpful assistant that researches real-world data to help mobile users find local menu items.
   You can read structured JSON input, search the internet for restaurant menus, and return formatted results.
+  
+  Your primary responsibilities:
+  1. Find and analyze restaurant menus from the provided list
+  2. Strictly filter menu items based on dietary restrictions (this is critical for user health and safety)
+  3. Match restaurants to user experience preferences (breakfast, fine dining, etc.)
+  4. Match restaurants to cuisine preferences (Italian, Mexican, etc.)
+  5. Return clean, well-structured JSON with menu items that best match the user's needs
+  
+  For dietary restrictions, be extremely careful and conservative - when in doubt, exclude an item.
+  For experience and cuisine matching, use both explicit restaurant information and implicit knowledge.
+  
   Your goal is to return menu items in a clean, consistent JSON structure. Be accurate, practical, and concise.
   `;
 

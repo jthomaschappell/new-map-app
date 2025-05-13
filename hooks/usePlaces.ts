@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import * as Location from 'expo-location';
 import { Place } from '@/types/place';
-import { fetchPlacesGoogleAPI, fetchPlacesGrok, genericCallerGrok } from '@/services/placeService';
+import { fetchPlacesGoogleAPI, genericCallerGrok } from '@/services/placeService';
 import { withRepeat } from 'react-native-reanimated';
 import { MenuItem } from '@/types/menu_item';
 import { generateMenuSearchPrompts } from '@/config/prompts';
-import { DIETARY_OPTIONS } from '@/constants/constants';
+import { CUISINES, DIETARY_OPTIONS, EXPERIENCES } from '@/constants/constants';
 
 function removeDuplicates(places: Place[]) {
   const seen = new Set();
@@ -27,7 +27,7 @@ function filterPlacesByType(places: Place[], filterString: string): Place[] {
       newPlaces.push(place);
     }
   }
-  return newPlaces;
+  return newPlaces; 
 }
 
 /**
@@ -58,9 +58,13 @@ export function usePlaces() {
 
       const myDietaryRestrictions = DIETARY_OPTIONS.filter((option) => option === "Gluten Free" || option === "Lactose Intolerant" || option === "Egg Free");
 
-      const { userPrompt, systemPrompt } = generateMenuSearchPrompts(likedFoodItems, uniqueGooglePlaces, myDietaryRestrictions);
+      const myExperiences = EXPERIENCES.filter((option) => option === "Dinner Sit Down" || option === "Hidden Gem" || option === "Fine Dining");
 
-      // ! TEST: Test the prompts to see if it gives things that are gluten free, lactose intolerant, and egg free
+      // const myCuisines = CUISINES.filter((option) => option === "Thai" || option === "Japanese" || option === "Korean");
+
+      const myCuisines = CUISINES; 
+
+      const { userPrompt, systemPrompt } = generateMenuSearchPrompts(likedFoodItems, uniqueGooglePlaces, myDietaryRestrictions, myExperiences, myCuisines);
 
       const response = await genericCallerGrok(userPrompt, systemPrompt);
       console.log("The response from the generic caller to Grok is: ");

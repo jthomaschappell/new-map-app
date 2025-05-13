@@ -1,5 +1,4 @@
 import { Place } from '@/types/place';
-import { buildTrampolineSystemPrompt, buildTrampolineUserPrompt } from '@/config/prompts';
 import Constants from 'expo-constants';
 
 // Get environment variables from Expo Constants
@@ -150,56 +149,6 @@ export async function genericCallerGrok(userPrompt: string, systemPrompt:string)
 
   } catch (error) {
     console.error("Error with the generic caller to Grok", error); 
-  }
-}
-
-
-// ! THIS IS NO LONGER USED
-/**
- * Fetches nearby pizza places using the Grok API
- * @param latitude - The latitude coordinate to search from
- * @param longitude - The longitude coordinate to search from
- * @returns Promise<PizzaPlace[]> - Array of pizza places
- * @throws Error if API request fails or response parsing fails
- */
-export async function fetchPlacesGrok(latitude: number, longitude: number): Promise<Place[]> {
-  try {
-    // Make API request to Grok
-    const response = await fetch(GROK_API_ENDPOINT as string, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${GROK_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "grok-2-latest",
-        messages: [
-          {
-            role: "system",
-            content: buildTrampolineSystemPrompt(),
-          },
-          {
-            role: "user",
-            content: buildTrampolineUserPrompt(latitude, longitude),
-          }
-        ],
-        stream: false,
-        temperature: 0  // Use deterministic responses
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Grok API request (fetch places) failed with status ${response.status}`);
-    }
-
-    const data = await response.json();
-    const parsedResponse = parsePizzaPlacesResponse(data);
-    console.log('Parsed response:', parsedResponse);
-    return parsedResponse;
-  } catch (error) {
-    console.error('Error fetching pizza places:', error);
-    throw error;
   }
 }
 

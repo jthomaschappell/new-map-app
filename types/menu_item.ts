@@ -7,4 +7,6 @@ export interface MenuItem {
     latitude: number;
     longitude: number;
     distance: string;
+    matchesDietary: boolean;
+    matchesPreferences: boolean;
 }

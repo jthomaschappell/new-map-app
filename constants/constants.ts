@@ -28,3 +28,40 @@ export const DIETARY_OPTIONS = [
     "Diabetic",
     "Chrones"
   ];
+
+  export const EXPERIENCES = [
+    "Breakfast Fast",
+    "Breakfast Sit Down",
+    "Brunch",
+    "Lunch Fast",
+    "Lunch Sit Down",
+    "Lunch Business",
+    "Dinner Fast",
+    "Dinner Sit Down",
+    "Dinner Business",
+    "Late Night",
+    "Desserts",
+    "Drinks",
+    "Coffee/Tea",
+    "Hidden Gem",
+    "Casual",
+    "Fine Dining",
+    "Family-Friendly",
+    "Outdoor/Patio", 
+    "Ethnic/Cultural",
+    "Romantic",
+    "Budget-Friendly"
+  ];
+
+  export const CUISINES = [
+    "Italian",
+    "Mexican", 
+    "Chinese",
+    "Japanese",
+    "Thai",
+    "Indian", 
+    "Greek",
+    "Korean",
+    "Vietnamese",
+    "American"
+  ];
