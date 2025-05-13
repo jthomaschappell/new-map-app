@@ -1,64 +1,12 @@
-import { StyleSheet, Platform, Dimensions, RefreshControl, Pressable } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import { StyleSheet } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { MenuItemsList } from '@/components/MenuItemsList';
 import { usePlaces } from '@/hooks/usePlaces';
-import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
-  const { places, menuItems, loading, error, location, refreshPlaces } = usePlaces();  
+  const { menuItems, loading, error } = usePlaces();  
   return (
     <ThemedView style={styles.container}>
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          // Default location: San Francisco, CA if user location not available
-          latitude: location?.coords?.latitude || 37.78825,
-          longitude: location?.coords?.longitude || -122.4324,
-          // These values control the zoom level and visible area of the map
-          // latitudeDelta: Degrees of latitude to display (smaller = more zoomed in)
-          // longitudeDelta: Degrees of longitude to display (smaller = more zoomed in)
-          // Current values show roughly a city-level view
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
-        showsUserLocation={true} // blue dot
-        showsMyLocationButton={true} // pin icon
-      >
-        {/* If location is valid then render the user location marker */}
-        {location && (
-          <Marker
-            coordinate={{
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-            }}
-            pinColor="blue"
-            title="You are here"
-          />
-        )}
-        {/* Other map markers */}
-        {menuItems.map((menuItem) => (
-          <Marker
-            key={menuItem.id}
-            coordinate={{
-              latitude: menuItem.latitude,
-              longitude: menuItem.longitude,
-            }}
-            title={menuItem.name}
-            description={menuItem.restaurant}
-            // TODO: Test this out. 
-          />
-        ))}
-      </MapView>
-      
-      <Pressable 
-        style={styles.refreshButton}
-        onPress={refreshPlaces}
-      >
-        <Ionicons name="refresh" size={24} color="black" />
-      </Pressable>
-
-      {/* Display in list format */}
       <MenuItemsList
         menuItems={menuItems}
         loading={loading}
@@ -71,41 +19,5 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-  map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height * 0.5,
-  },
-  refreshButton: {
-    position: 'absolute',
-    top: 16,
-    left: 16,
-    backgroundColor: 'white',
-    padding: 8,
-    borderRadius: 20,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
   },
 });
