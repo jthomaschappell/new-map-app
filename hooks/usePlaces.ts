@@ -4,6 +4,8 @@ import { Place } from '@/types/place';
 import { fetchPlacesGoogleAPI, fetchPlacesGrok, genericCallerGrok } from '@/services/placeService';
 import { withRepeat } from 'react-native-reanimated';
 import { MenuItem } from '@/types/menu_item';
+import { generateMenuSearchPrompts } from '@/config/prompts';
+import { DIETARY_OPTIONS } from '@/constants/constants';
 
 function removeDuplicates(places: Place[]) {
   const seen = new Set();
@@ -54,54 +56,11 @@ export function usePlaces() {
 
       const likedFoodItems = ["spicy chicken sandwich", "pad thai", "bubble tea", "truffle fries"];
 
-      const userPrompt = `
-You will receive a list of up to 20 restaurants in JSON format, each with location data.
-Use this list to search the internet for menus from these restaurants.
-Extract popular or signature food items from each menu, aiming to return a total of **up to 40 items** overall.
+      const myDietaryRestrictions = DIETARY_OPTIONS.filter((option) => option === "Gluten Free" || option === "Lactose Intolerant" || option === "Egg Free");
 
-Some restaurants may not have public menus — if that's the case, skip them or infer likely menu items based on restaurant type or name.
+      const { userPrompt, systemPrompt } = generateMenuSearchPrompts(likedFoodItems, uniqueGooglePlaces, myDietaryRestrictions);
 
-For each menu item you return, include the following:
-- "name" (of the menu item, as a string)
-- "price" (as a number in USD, or null)
-- "restaurant" (name of the restaurant from the input)
-- "message" (a message to the user about why they might like the menu item, or why they should try it. Keep it to 100 characters or less.)
-- "latitude" (the latitude of the restaurant)
-- "longitude" (the longitude of the restaurant)
-- "distance" (the distance from the user's current location to the restaurant in miles)
-
-Please return **only** the result in this JSON format:
-
-{
-  "menu_items": [
-    {
-      "id": "1",
-      "name": "Cheeseburger",
-      "price": 9.99,
-      "restaurant": "Bob's Burgers",
-      "latitude": 37.774929,
-      "longitude": -122.419416,
-      "distance": "1.5",
-      "message": "This is a great menu item for a family of 4."
-    },
-    ...
-  ]
-}
-
-Here is a list of food items this user has liked in the past:
-${likedFoodItems.join(", ")}
-
-Give preference to restaurants and menu items that match or resemble these preferences.
-
-Here is the input list of restaurants:
-${JSON.stringify(uniqueGooglePlaces, null, 2)}
-`;
-
-      const systemPrompt = `
-You are a helpful assistant that researches real-world data to help mobile users find local menu items.
-You can read structured JSON input, search the internet for restaurant menus, and return formatted results.
-Your goal is to return menu items in a clean, consistent JSON structure. Be accurate, practical, and concise.
-`;
+      // ! TEST: Test the prompts to see if it gives things that are gluten free, lactose intolerant, and egg free
 
       const response = await genericCallerGrok(userPrompt, systemPrompt);
       console.log("The response from the generic caller to Grok is: ");
@@ -152,7 +111,7 @@ Your goal is to return menu items in a clean, consistent JSON structure. Be accu
         setError(err instanceof Error ? err.message : 'Failed to get location');
       }
     })();
-  }, [fetchPlaces]); // this runs anytime fetchPlaces changes.
+  }, [fetchPlaces]); 
 
   /**
    * Callback to manually refresh places data

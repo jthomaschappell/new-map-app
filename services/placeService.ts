@@ -154,6 +154,7 @@ export async function genericCallerGrok(userPrompt: string, systemPrompt:string)
 }
 
 
+// ! THIS IS NO LONGER USED
 /**
  * Fetches nearby pizza places using the Grok API
  * @param latitude - The latitude coordinate to search from
