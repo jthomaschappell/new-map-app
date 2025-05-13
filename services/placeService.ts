@@ -1,3 +1,4 @@
+import { MAX_SEARCH_RADIUS } from '@/constants/constants';
 import { Place } from '@/types/place';
 import Constants from 'expo-constants';
 
@@ -59,11 +60,13 @@ export async function fetchPlacesGoogleAPI(latitude: number, longitude: number, 
               latitude: latitude,
               longitude: longitude
             },
-            // radius: 1500.0
-            radius: 30000.0
+            // NOTE: The maximum value is 50_000 meters. 
+            // radius: 30000.0
+            radius: MAX_SEARCH_RADIUS
           }
         },
-        rankPreference: "DISTANCE",
+        // Note: might cause an error if both "radius" and "rankPreference" are included.
+        rankPreference: "DISTANCE",  
         maxResultCount: 20,
         includedTypes: cuisine
       })

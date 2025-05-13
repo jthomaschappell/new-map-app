@@ -71,3 +71,9 @@ export const GOOGLE_LONGITUDE = -122.4324;
 
 export const PROVO_LATITUDE = 40.2337;
 export const PROVO_LONGITUDE = -111.6585;
+
+export const MAX_SEARCH_RADIUS = 50000.0; 
+
+// TODO: How to convert from viewport to longitude and latitude delta. 
+
+// TODO: How does it look when we take out preference by distance? 

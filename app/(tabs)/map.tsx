@@ -23,12 +23,25 @@ export default function MapScreen() {
   }, [location]);
 
   useEffect(() => {
+    if (location) {
+      console.log("Location changed!", location);
+    }
+  }, [location]); // listener for when location changes. 
+
+  useEffect(() => {
     if (region) {
       console.log("DEBUGGING AND TESTING REGION CHANGE: Region changed!");
       console.log("DEBUGGING AND TESTING REGION CHANGE: New region is ", region);
     }
   }, [region]);
-  // ! TEST: Change the default region to be my location, not San Francisco. 
+  // If there's a problem, it could be the direct load of the Android from Cursor. 
+
+  // ! TEST: Test the refreshPlaces. 
+  /**
+   * ! When we move, it should set the region to our new center. 
+   * ! When we click refresh, it should search again with that new region. 
+   * ! It should do a new Google API -> Grok API -> marker Menu items. 
+   */
 
   return (
     <ThemedView style={styles.container}>
@@ -38,6 +51,8 @@ export default function MapScreen() {
           latitude: location?.coords?.latitude || GOOGLE_LATITUDE,
           longitude: location?.coords?.longitude || GOOGLE_LONGITUDE,
           latitudeDelta: 0.0922,
+          // Controls how many degrees of longitude to display (zoom level) 
+          // A smaller number means more zoomed in
           longitudeDelta: 0.0421,
         }}
         showsUserLocation={true}

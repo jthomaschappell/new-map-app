@@ -50,3 +50,12 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+
+# Scratch 
+
+
+| Approach              | Calculation                                                                   | Pros                               | Cons                                   |
+|-----------------------|-------------------------------------------------------------------------------|------------------------------------|----------------------------------------|
+| 1. latitudeDelta only | radius = (latitudeDelta / 2) × 111,000                                        | Simple, fast                       | Less accurate for wide/zoomed-out maps |
+| 2. Diagonal (lat/lon) | radius = 0.5 × sqrt((latDelta × 111,000)² + (lonDelta × 111,320 × cos(lat))²) | More accurate, considers map shape | Slightly more complex                  |

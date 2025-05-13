@@ -149,6 +149,3 @@ export function usePlaces() {
     refreshPlaces,
   };
 }
-// TODO: Reload the app and see if region changes when we move. 
-
-// ! It looks like region changes when we move. 
