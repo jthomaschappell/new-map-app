@@ -1,41 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import * as Location from 'expo-location';
 import { Place } from '@/types/place';
-import { fetchPlacesGoogleAPI, filterPlacesByTypes, genericCallerGrok } from '@/services/placeService';
-import { withRepeat } from 'react-native-reanimated';
+import { fetchPlacesGoogleAPI, genericCallerGrok } from '@/services/placeService';
 import { MenuItem } from '@/types/menu_item';
 import { generateMenuSearchPrompts } from '@/config/prompts';
 import { CUISINES, DIETARY_OPTIONS, EXPERIENCES } from '@/constants/constants';
-
-function removeDuplicates(places: Place[]) {
-  const seen = new Set();
-  return places.filter((place: Place) => {
-    const key = JSON.stringify(place);
-    if (seen.has(key)) {  // if the place has already been seen, return false
-      return false;
-    } else {
-      seen.add(key); // if the place has not been seen, add it to the set
-      return true;
-    }
-  });
-}
-
-function getRestaurantType(cuisine: string) {
-  const mapping = {
-    "Italian": "italian_restaurant",
-    "Mexican": "mexican_restaurant", 
-    "Chinese": "chinese_restaurant",
-    "Japanese": "japanese_restaurant",
-    "Thai": "thai_restaurant",
-    "Indian": "indian_restaurant",
-    "Greek": "greek_restaurant",
-    "Korean": "korean_restaurant",
-    "Vietnamese": "vietnamese_restaurant",
-    "American": "american_restaurant"
-  };
-
-  return mapping[cuisine as keyof typeof mapping];
-}
 
 /**
  * Custom hook to manage place data and location services
@@ -53,7 +22,7 @@ export function usePlaces() {
    * Fetches places for given coordinates
    * Manages loading and error states during the fetch operation
    */
-  const fetchPlaces = useCallback(async (latitude: number, longitude: number) => {
+  const fetchPlaces = useCallback(async (latitude: number, longitude: number, radius?: number) => {
     try {
       setLoading(true);
       setError(null);
@@ -64,7 +33,7 @@ export function usePlaces() {
         "korean_restaurant"
       ];
 
-      const googlePlaces = await fetchPlacesGoogleAPI(latitude, longitude, myCuisines);
+      const googlePlaces = await fetchPlacesGoogleAPI(latitude, longitude, myCuisines, radius);
 
       console.log("DEBUGGING AND TESTING: The google places are: ");
       console.log(googlePlaces);
@@ -121,7 +90,7 @@ export function usePlaces() {
         let response = await Location.reverseGeocodeAsync(location.coords);
 
         setLocation(location);
-        await fetchPlaces(location.coords.latitude, location.coords.longitude);
+        await fetchPlaces(location.coords.latitude, location.coords.longitude);   // TODO: This takes in radius = null => 50000.0
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to get location');
       }
@@ -131,12 +100,14 @@ export function usePlaces() {
   /**
    * Accepts optional latitude and longitude to refresh based on map center
    */
-  const refreshPlaces = useCallback(async (latitude?: number, longitude?: number) => {
+  const refreshPlaces = useCallback(async (latitude?: number, longitude?: number, radius?: number) => {
     console.log("DEBUGGING AND TESTING REFRESHING PLACES: Refreshing places");
+    // if the call is valid, then use the call. 
     if (latitude !== undefined && longitude !== undefined) {
-      await fetchPlaces(latitude, longitude);
+      await fetchPlaces(latitude, longitude, radius);
+    // if there is a bad call, then default to current location. 
     } else if (location) {
-      await fetchPlaces(location.coords.latitude, location.coords.longitude);
+      await fetchPlaces(location.coords.latitude, location.coords.longitude, radius);
     }
   }, [location, fetchPlaces]);
 

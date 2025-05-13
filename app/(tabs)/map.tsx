@@ -5,7 +5,7 @@ import { usePlaces } from '@/hooks/usePlaces';
 import { Ionicons } from '@expo/vector-icons';
 import { useState, useEffect } from 'react';
 import { GOOGLE_LATITUDE, GOOGLE_LONGITUDE, PROVO_LATITUDE, PROVO_LONGITUDE } from '@/constants/constants';
-
+import { calculateRadius } from '@/app/helper-functions/helper_functions';
 export default function MapScreen() {
   const { menuItems, loading, error, location, refreshPlaces } = usePlaces();
   const [region, setRegion] = useState<Region | undefined>(undefined);
@@ -86,7 +86,10 @@ export default function MapScreen() {
         style={styles.refreshButton}
         onPress={() => {
           if (region) {
-            refreshPlaces(region.latitude, region.longitude);
+            // Calculate radius in meters based on latitudeDelta
+            // TODO: Put this into a helper function. 
+            const radius = calculateRadius(region);
+            refreshPlaces(region.latitude, region.longitude, radius);
           }
         }}
       >
