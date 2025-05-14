@@ -109,14 +109,13 @@ export async function fetchPlacesGoogleAPI(latitude: number, longitude: number, 
 }
 
 
+/**
+ * Generic caller to Grok API
+ * @param userPrompt - The user prompt
+ * @param systemPrompt - The system prompt
+ * @returns The response from Grok
+ */
 export async function genericCallerGrok(userPrompt: string, systemPrompt:string) {
-
-  // console.log("Debugging logs:")
-  // console.log("The user prompt is: "); 
-  // console.log(userPrompt); 
-  // console.log("The system prompt is: "); 
-  // console.log(systemPrompt); 
-
   try {
     const response = await fetch(GROK_API_ENDPOINT as string, {
       method: 'POST', 
@@ -180,3 +179,5 @@ function parsePizzaPlacesResponse(data: any): Place[] {
     throw new Error('Failed to parse pizza places data');
   }
 } 
+
+// TODO: Boundary errors. When we go big it errors out. When we go far, it errors out. 

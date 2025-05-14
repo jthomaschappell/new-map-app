@@ -1,13 +1,20 @@
 import { StyleSheet, Dimensions, Pressable } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
 import { ThemedView } from '@/components/ThemedView';
-import { usePlaces } from '@/hooks/usePlaces';
+import { useSelector, useDispatch } from 'react-redux';
+import type { RootState, AppDispatch } from '../store';
+import { fetchMenuItems } from '../menuItemsSlice';
 import { Ionicons } from '@expo/vector-icons';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { GOOGLE_LATITUDE, GOOGLE_LONGITUDE, PROVO_LATITUDE, PROVO_LONGITUDE } from '@/constants/constants';
 import { calculateRadius } from '@/helper-functions/helper_functions';
+
 export default function MapScreen() {
-  const { menuItems, loading, error, location, refreshPlaces } = usePlaces();
+  const dispatch = useDispatch<AppDispatch>();
+  const menuItems = useSelector((state: RootState) => state.menuItems.menuItems);
+  const loading = useSelector((state: RootState) => state.menuItems.loading);
+  const error = useSelector((state: RootState) => state.menuItems.error);
+  const location = useSelector((state: RootState) => state.menuItems.location);
   const [region, setRegion] = useState<Region | undefined>(undefined);
 
   // Set initial region when location is available
@@ -46,6 +53,13 @@ export default function MapScreen() {
    * ! It should do a new Google API -> Grok API -> marker Menu items. 
    */
 
+  const handleRefresh = useCallback(() => {
+    if (region) {
+      const radius = calculateRadius(region);
+      dispatch(fetchMenuItems({ latitude: region.latitude, longitude: region.longitude, radius }));
+    }
+  }, [region, dispatch]);
+
   return (
     <ThemedView style={styles.container}>
       <MapView
@@ -73,7 +87,7 @@ export default function MapScreen() {
             title="You are here"
           />
         )}
-        {menuItems.map((menuItem) => (
+        {menuItems.map((menuItem: any) => (
           <Marker
             key={menuItem.id}
             coordinate={{
@@ -87,13 +101,7 @@ export default function MapScreen() {
       </MapView>
       <Pressable
         style={styles.refreshButton}
-        onPress={() => {
-          if (region) {
-            // Calculate radius in meters based on latitudeDelta
-            const radius = calculateRadius(region);
-            refreshPlaces(region.latitude, region.longitude, radius);
-          }
-        }}
+        onPress={handleRefresh}
       >
         <Ionicons name="refresh" size={24} color="black" />
       </Pressable>
